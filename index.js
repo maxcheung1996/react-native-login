@@ -8,19 +8,10 @@ import App from './App';
 import { name as appName } from './app.json';
 import { AuthContextProvider } from './src/context/AuthContext';
 
-const theme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: 'tomato',
-      secondary: 'yellow',
-    },
-  };
-
 export default function Main() {
     return (
         <AuthContextProvider>
-            <PaperProvider theme={theme}>
+            <PaperProvider>
                 <App />
             </PaperProvider>
         </AuthContextProvider>
