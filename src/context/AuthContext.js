@@ -2,6 +2,10 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
+import { realmCreate } from '../database/service/crud';
+import { LoggedLog } from '../database/schema/User';
+import { v4 as uuid } from 'uuid'
+import { getLocalTimeStamp } from '../helper';
 
 export const AuthContext = React.createContext({})
 
@@ -10,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState({});
     const [splashLoading, setSplashLoading] = useState(false);
 
-    const login = (email, password) => {
+    const login = async (email, password) => {
         setIsLoading(true);
 
         //console.log("userInfo: ", userInfo);
@@ -28,6 +32,14 @@ export const AuthContextProvider = ({ children }) => {
             console.log(`login error ${e}`)
             setIsLoading(false);
         })
+
+        let obj = [{
+            _id: uuid(),
+            email: email,
+            createdAt: getLocalTimeStamp(),
+        }]
+
+        await realmCreate(LoggedLog, "LoggedLog", obj)
     }
 
     const logout = (email = "", password = "", token = "") => {

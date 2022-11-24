@@ -7,6 +7,7 @@ import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-
 import App from './App';
 import { name as appName } from './app.json';
 import { AuthContextProvider } from './src/context/AuthContext';
+import 'react-native-get-random-values'
 
 export default function Main() {
     return (

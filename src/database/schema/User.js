@@ -1,10 +1,9 @@
-export const User = {
-    name: "User",
+export const LoggedLog = {
+    name: "LoggedLog",
     properties: {
-      _id: "int",
+      _id: "string",
       email: "string",
-      timeStamp: "date",
-      status: "string?",
+      createdAt: "date",
     },
     primaryKey: "_id",
   };
