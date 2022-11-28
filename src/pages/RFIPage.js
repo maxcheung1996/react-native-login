@@ -15,16 +15,6 @@ const RFIPage = () => {
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
         <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
         <Text>This is RFI Screen.</Text>
-        <Button
-          disabled={isLoading}
-          style={{marginTop: 20, width: '50%'}}
-          icon="logout"
-          mode="elevated"
-          onPress={() => {
-            logout();
-          }}>
-          Logout
-        </Button>
       </ImageBackground>
     </View>
   );

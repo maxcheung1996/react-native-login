@@ -15,7 +15,7 @@ import {
   MD2Colors,
 } from 'react-native-paper';
 
-const RegisterPage = ({}) => {
+const RegisterPage = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [cpassword, setCPassword] = useState(null);
@@ -112,9 +112,9 @@ const RegisterPage = ({}) => {
               justifyContent: 'flex-end',
             }}>
             <Text>Already have an account? </Text>
-            {/* <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                             <Text style={style.link}>Login</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
           </View>
         </View>
         <Snackbar

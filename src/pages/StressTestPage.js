@@ -11,7 +11,7 @@ import { EformResultDetail } from '../database/schema/EformResultDetail';
 import { EformPhotoDetail } from '../database/schema/EformPhotoDetail';
 import { getLocalTimeStamp } from '../helper';
 
-const HomePage = () => {
+const StressTestPage = () => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
 
   return (
@@ -22,16 +22,7 @@ const HomePage = () => {
         style={style.image}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
         <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
-        <Button
-          disabled={isLoading}
-          style={{marginTop: 20, width: '50%'}}
-          icon="logout"
-          mode="elevated"
-          onPress={() => {
-            logout();
-          }}>
-          Logout
-        </Button>
+        <Text>This is Stress Test Screen.</Text>
         <Button
           disabled={isLoading}
           style={{marginTop: 20, width: '50%'}}
@@ -180,4 +171,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default HomePage;
+export default StressTestPage;
