@@ -24,7 +24,7 @@ export const AuthContextProvider = ({children}) => {
       .post(`${BASE_URL}Authenticate/login`, {
         Username: email,
         Password: password,
-      })
+      })    
       .then(res => {
         resp = res.data;
         setUserInfo(resp);
@@ -44,7 +44,7 @@ export const AuthContextProvider = ({children}) => {
     }
   };
 
-  const insertLoggedLog = async resp => {
+  const insertLoggedLog = async (resp, email) => {
     let obj = [
       {
         _id: uuid(),
