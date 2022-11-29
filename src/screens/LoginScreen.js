@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   MD2Colors,
 } from 'react-native-paper';
+import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics'
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -22,6 +23,46 @@ const LoginScreen = ({navigation}) => {
     useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [visible, setVisible] = useState(false);
+  const rnBiometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true })
+
+  const promptBiometrics = () => {
+    rnBiometrics
+      .simplePrompt({promptMessage: 'Confirm fingerprint'})
+      .then(resultObject => {
+        const {success} = resultObject;
+
+        if (success) {
+          console.log('successful biometrics provided');
+        } else {
+          console.log('user cancelled biometric prompt');
+        }
+      })
+      .catch(() => {
+        console.log('biometrics failed');
+      });
+  };
+
+  const biometricsLogin = () => {
+    rnBiometrics.isSensorAvailable().then(resultObject => {
+      const {available, biometryType} = resultObject;
+
+      if (available && biometryType === BiometryTypes.TouchID) {
+        console.log('TouchID is supported');
+        promptBiometrics();
+      } else if (available && biometryType === BiometryTypes.FaceID) {
+        console.log('FaceID is supported');
+        promptBiometrics();
+      } else if (available && biometryType === BiometryTypes.Biometrics) {
+        console.log('Biometrics is supported');
+        promptBiometrics();
+      } else {
+        console.log('Biometrics not supported');
+        promptBiometrics();
+      }
+    });
+  };
+
+  
 
   const validLogin = (email, password) => {
     if (
@@ -95,6 +136,7 @@ const LoginScreen = ({navigation}) => {
               }}>
               Login
             </Button>
+            <Button style={{marginTop: 20}} onPress={biometricsLogin} mode="elevated">Bio Login</Button>
           </View>
           <View
             style={{

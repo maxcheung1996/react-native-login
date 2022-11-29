@@ -7,6 +7,7 @@ import {userInfoTable} from '../database/schema/User';
 import {v4 as uuid} from 'uuid';
 import {getLocalTimeStamp} from '../helper';
 
+
 export const AuthContext = React.createContext({});
 
 export const AuthContextProvider = ({children}) => {
@@ -27,6 +28,7 @@ export const AuthContextProvider = ({children}) => {
       })    
       .then(res => {
         resp = res.data;
+        console.log(resp);
         setUserInfo(resp);
         AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
         isLoggedIn = !isLoggedIn;
@@ -40,7 +42,7 @@ export const AuthContextProvider = ({children}) => {
       });
 
     if (isLoggedIn) {
-      await insertLoggedLog(resp);
+      await insertLoggedLog(resp, email);
     }
   };
 
