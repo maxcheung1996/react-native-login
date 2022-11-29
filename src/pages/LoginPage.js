@@ -82,7 +82,7 @@ const LoginPage = ({navigation}) => {
           <View style={{alignItems: 'center'}}>
             <Button
               disabled={isLoading}
-              style={{marginTop: 20, width: '50%'}}
+              style={{marginTop: 20}}
               icon="login"
               mode="elevated"
               onPress={() => {

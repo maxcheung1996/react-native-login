@@ -97,7 +97,7 @@ const RegisterPage = ({navigation}) => {
           <View style={{alignItems: 'center'}}>
             <Button
               disabled={isLoading}
-              style={{marginTop: 20, width: '50%'}}
+              style={{marginTop: 20}}
               mode="elevated"
               onPress={() => {
                 validPassword(email, password);

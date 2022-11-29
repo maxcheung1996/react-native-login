@@ -17,7 +17,7 @@ const SettingPage = () => {
         <Text>This is Setting Screen.</Text>
         <Button
           disabled={isLoading}
-          style={{marginTop: 20, width: '50%'}}
+          style={{marginTop: 20}}
           icon="logout"
           mode="elevated"
           onPress={() => {
