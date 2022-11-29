@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {Button, ActivityIndicator, MD2Colors} from 'react-native-paper';
 
-const AAHKPage = () => {
+const RFIScreen = () => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
 
   return (
@@ -14,7 +14,7 @@ const AAHKPage = () => {
         style={style.image}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
         <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
-        <Text>This is AAHK Screen.</Text>
+        <Text>This is RFI Screen.</Text>
       </ImageBackground>
     </View>
   );
@@ -35,4 +35,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default AAHKPage;
+export default RFIScreen;

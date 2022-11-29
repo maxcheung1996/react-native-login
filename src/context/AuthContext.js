@@ -1,117 +1,117 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from '../config';
-import { realmCreate } from '../database/service/crud';
-import { LoggedLog } from '../database/schema/User';
-import { v4 as uuid } from 'uuid'
-import { getLocalTimeStamp } from '../helper';
+import {BASE_URL} from '../config';
+import {realmCreate} from '../database/service/crud';
+import {userInfoTable} from '../database/schema/User';
+import {v4 as uuid} from 'uuid';
+import {getLocalTimeStamp} from '../helper';
 
-export const AuthContext = React.createContext({})
+export const AuthContext = React.createContext({});
 
-export const AuthContextProvider = ({ children }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [userInfo, setUserInfo] = useState({});
-    const [splashLoading, setSplashLoading] = useState(false);
+export const AuthContextProvider = ({children}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [splashLoading, setSplashLoading] = useState(false);
+  const [loginVisible, setLoginVisible] = useState(false);
+  const [loginMsg, setLoginMsg] = useState("");
 
-    const login = async (email, password) => {
-        setIsLoading(true);
-
-        //console.log("userInfo: ", userInfo);
-
-        axios.post(`${BASE_URL}Authenticate/login`, {
-            Username: email,
-            Password: password
-        }).then(res => {
-            let userInfo = res.data;
-            console.log(userInfo)
-            setUserInfo(userInfo);
-            AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
-            setIsLoading(false);
-        }).catch(e => {
-            console.log(`login error ${e}`)
-            setIsLoading(false);
-        })
-
-        let obj = [{
-            _id: uuid(),
-            email: email,
-            createdAt: getLocalTimeStamp(),
-        }]
-
-        await realmCreate(LoggedLog, "LoggedLog", obj)
-    }
-
-    const logout = (email = "", password = "", token = "") => {
-        setIsLoading(true);
-
-        // console.log("userInfo: ", userInfo);
-
-        // axios.post(`${BASE_URL}Authenticate/logout`, {
-        //     Username: email,
-        //     Password: password
-        //   }).then(res => {
-        //     let userInfo = res.data;
-        //     console.log(userInfo)
-        //     setUserInfo(userInfo);
-        //     AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
-        //     setIsLoading(false);
-        // }).catch(e => {
-        //     console.log(`login error ${e}`)
-        //     setIsLoading(false);
-        // })
-
-        AsyncStorage.removeItem('userInfo');
-        setUserInfo({});
-        //console.log("successfully logout")
+  const login = async (email, password) => {
+    setIsLoading(true);
+    let resp;
+    let isLoggedIn = false;
+    await axios
+      .post(`${BASE_URL}Authenticate/login`, {
+        Username: email,
+        Password: password,
+      })
+      .then(res => {
+        resp = res.data;
+        setUserInfo(resp);
+        AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+        isLoggedIn = !isLoggedIn;
         setIsLoading(false);
-    }
-
-    const register = (email, password) => {
-        setIsLoading(true);
-        
-         // console.log("userInfo: ", userInfo);
-
-        // axios.post(`${BASE_URL}Authenticate/register`, {
-        //     Username: email,
-        //     Password: password
-        //   }).then(res => {
-        //     let userInfo = res.data;
-        //     console.log(userInfo);
-        //     setUserInfo(userInfo);
-        //     AsyncStorage.setItem('userInfo', JSON.stringify(userInfo))
-        //     setIsLoading(false);
-        // }).catch(e => {
-        //     console.log(`register error ${e}`)
-        //     setIsLoading(false);
-        // })
+      })
+      .catch(e => {
+        console.log(`login error ${e}`);
+        setLoginMsg(`authentication failure ${e.response.status}`);
+        setLoginVisible(true);
         setIsLoading(false);
+      });
+
+    if (isLoggedIn) {
+      await insertLoggedLog(resp);
     }
+  };
 
-    const isLoggedIn = async () => {
-        try {
-            setSplashLoading(true);
-            let userInfo = await AsyncStorage.getItem('userInfo')
-            userInfo = JSON.parse(userInfo);
+  const insertLoggedLog = async resp => {
+    let obj = [
+      {
+        _id: uuid(),
+        loginId: email,
+        fullname: resp.fullname,
+        email: resp.usermail,
+        team: resp.team,
+        role: resp.team,
+        token: resp.token,
+        userid: resp.userid,
+        isenable: 'Y',
+        expiration: resp.expiration,
+        createdAt: getLocalTimeStamp(),
+      },
+    ];
+    await realmCreate(userInfoTable, 'userInfo', obj);
+  };
 
-            if (userInfo) {
-                setUserInfo(userInfo);
-            }
+  const logout = (email = '', password = '', token = '') => {
+    setIsLoading(true);
+    AsyncStorage.removeItem('userInfo');
+    setUserInfo({});
+    //console.log("successfully logout")
+    setIsLoading(false);
+  };
 
-            setSplashLoading(false);
-        } catch (e) {
-            setSplashLoading(false);
-            console.log(`is logged in error ${e}`)
-        }
+  const register = (email, password) => {
+    setIsLoading(true);
+    setIsLoading(false);
+  };
+
+  const isLoggedIn = async () => {
+    try {
+      setSplashLoading(true);
+      let userInfo = await AsyncStorage.getItem('userInfo');
+      userInfo = JSON.parse(userInfo);
+
+      if (userInfo) {
+        setUserInfo(userInfo);
+      }
+
+      setSplashLoading(false);
+    } catch (e) {
+      setSplashLoading(false);
+      console.log(`is logged in error ${e}`);
     }
+  };
 
-    useEffect(() => {
-        isLoggedIn();
-    }, [])
+  useEffect(() => {
+    isLoggedIn();
+  }, []);
 
-    return (
-        <AuthContext.Provider value={{ isLoading, userInfo, login, register, logout, splashLoading, isLoggedIn }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+  return (
+    <AuthContext.Provider
+      value={{
+        loginMsg,
+        setLoginVisible,
+        loginVisible,
+        isLoading,
+        userInfo,
+        login,
+        register,
+        logout,
+        splashLoading,
+        isLoggedIn,
+      }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

@@ -15,7 +15,7 @@ import {
   MD2Colors,
 } from 'react-native-paper';
 
-const RegisterPage = ({navigation}) => {
+const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [cpassword, setCPassword] = useState(null);
@@ -145,4 +145,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default RegisterPage;
+export default RegisterScreen;

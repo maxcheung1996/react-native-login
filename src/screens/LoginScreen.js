@@ -15,10 +15,11 @@ import {
   MD2Colors,
 } from 'react-native-paper';
 
-const LoginPage = ({navigation}) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const {isLoading, login} = useContext(AuthContext);
+  const {isLoading, login, loginVisible, loginMsg, setLoginVisible} =
+    useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [visible, setVisible] = useState(false);
 
@@ -38,6 +39,10 @@ const LoginPage = ({navigation}) => {
 
   const onDismissSnackBar = () => {
     setVisible(false);
+  };
+
+  const onDismissLoginBar = () => {
+    setLoginVisible(false);
   };
 
   return (
@@ -99,8 +104,8 @@ const LoginPage = ({navigation}) => {
             }}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                            <Text style={style.link}>Register</Text>
-                        </TouchableOpacity>
+              <Text style={style.link}>Register</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <Snackbar
@@ -108,6 +113,12 @@ const LoginPage = ({navigation}) => {
           onDismiss={onDismissSnackBar}
           duration={2500}>
           Email or Password must not be empty.
+        </Snackbar>
+        <Snackbar
+          visible={loginVisible}
+          onDismiss={onDismissLoginBar}
+          duration={2500}>
+          {loginMsg}
         </Snackbar>
       </ImageBackground>
     </View>
@@ -131,4 +142,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default LoginScreen;

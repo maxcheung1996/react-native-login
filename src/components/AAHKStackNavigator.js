@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AAHKPage from '../pages/AAHKPage';
+import AAHKScreen from '../screens/AAHKScreen';
 
 const Stack = createNativeStackNavigator();
 
 const AAHKStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="AAHK" component={AAHKPage} />
+      <Stack.Screen name="AAHK" component={AAHKScreen} />
     </Stack.Navigator>
   );
 };

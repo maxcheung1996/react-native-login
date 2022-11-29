@@ -11,7 +11,7 @@ import { EformResultDetail } from '../database/schema/EformResultDetail';
 import { EformPhotoDetail } from '../database/schema/EformPhotoDetail';
 import { getLocalTimeStamp } from '../helper';
 
-const StressTestPage = () => {
+const StressTestScreen = () => {
   const {userInfo, isLoading} = useContext(AuthContext);
   const [downloadStartTimeStr, setDownloadStartTimeStr] = useState(null);
   const [downloadEndTimeStr, setDownloadEndTimeStr] = useState(null);
@@ -182,4 +182,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default StressTestPage;
+export default StressTestScreen;

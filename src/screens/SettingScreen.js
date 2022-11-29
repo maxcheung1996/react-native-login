@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {Button, ActivityIndicator, MD2Colors} from 'react-native-paper';
 
-const SettingPage = () => {
+const SettingScreen = () => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
 
   return (
@@ -45,4 +45,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default SettingPage;
+export default SettingScreen;
