@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -14,7 +14,9 @@ import {
   ActivityIndicator,
   MD2Colors,
 } from 'react-native-paper';
-import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics'
+import biometrics from '../biometrics';
+import { FINGERPRINT_BYPASS } from '../config';
+import { getLastLoginUserInfo } from '../helper';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -22,65 +24,24 @@ const LoginScreen = ({navigation}) => {
   const {isLoading, login, loginVisible, loginMsg, setLoginVisible} =
     useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  const [visible, setVisible] = useState(false);
-  const rnBiometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true })
+  const [firstTimeLogin, setFirstTimeLogin] = useState(true);
 
-  const promptBiometrics = () => {
-    rnBiometrics
-      .simplePrompt({promptMessage: 'Confirm fingerprint'})
-      .then(resultObject => {
-        const {success} = resultObject;
+  useEffect(() => {
+    checkFirstTimeLogin()
+  }, [])
 
-        if (success) {
-          console.log('successful biometrics provided');
-        } else {
-          console.log('user cancelled biometric prompt');
-        }
-      })
-      .catch(() => {
-        console.log('biometrics failed');
-      });
-  };
+  const checkFirstTimeLogin = async () => {
+    let user = [];
+    user = await getLastLoginUserInfo()
+    setFirstTimeLogin(user.length > 0 ? true : false)
+  }
 
-  const biometricsLogin = () => {
-    rnBiometrics.isSensorAvailable().then(resultObject => {
-      const {available, biometryType} = resultObject;
-
-      if (available && biometryType === BiometryTypes.TouchID) {
-        console.log('TouchID is supported');
-        promptBiometrics();
-      } else if (available && biometryType === BiometryTypes.FaceID) {
-        console.log('FaceID is supported');
-        promptBiometrics();
-      } else if (available && biometryType === BiometryTypes.Biometrics) {
-        console.log('Biometrics is supported');
-        promptBiometrics();
-      } else {
-        console.log('Biometrics not supported');
-        promptBiometrics();
-      }
-    });
-  };
-
-  
-
-  const validLogin = (email, password) => {
-    if (
-      email === null ||
-      password === null ||
-      email === '' ||
-      password === ''
-    ) {
-      setVisible(true);
-      return;
-    } else {
-      login(email, password);
+  const BioLogin = async () => {
+    let res = await biometrics();
+    if(res){
+      login(FINGERPRINT_BYPASS, "SOCAM_BIO");
     }
-  };
-
-  const onDismissSnackBar = () => {
-    setVisible(false);
-  };
+  }
 
   const onDismissLoginBar = () => {
     setLoginVisible(false);
@@ -125,18 +86,17 @@ const LoginScreen = ({navigation}) => {
               />
             }
           />
-          <View style={{alignItems: 'center'}}>
+          <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
             <Button
               disabled={isLoading}
-              style={{marginTop: 20}}
               icon="login"
               mode="elevated"
               onPress={() => {
-                validLogin(email, password);
+                login(email, password);
               }}>
               Login
             </Button>
-            <Button style={{marginTop: 20}} onPress={biometricsLogin} mode="elevated">Bio Login</Button>
+            {firstTimeLogin ? <Button style={{marginLeft: 15, width: 5}} icon="fingerprint" onPress={BioLogin} /> : <></>}
           </View>
           <View
             style={{
@@ -150,12 +110,6 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Snackbar
-          visible={visible}
-          onDismiss={onDismissSnackBar}
-          duration={2500}>
-          Email or Password must not be empty.
-        </Snackbar>
         <Snackbar
           visible={loginVisible}
           onDismiss={onDismissLoginBar}

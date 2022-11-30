@@ -1,5 +1,5 @@
 import Realm from "realm";
-import { key } from "../../config";
+import { KEY } from "../../config";
 
 export const realmCreate = async (schema, name, obj) => {
     let count = 0;
@@ -9,7 +9,7 @@ export const realmCreate = async (schema, name, obj) => {
         const realm = await Realm.open({
             path: 'aahk',
             schema: [schema],
-            encryptionKey: key
+            encryptionKey: KEY
         });
 
         //create data to schema
@@ -22,8 +22,6 @@ export const realmCreate = async (schema, name, obj) => {
             }
         })
 
-        //close the realm
-        realm.close()
         console.log(`create record for ${name} successfully`)
     } catch (error) {
         console.log(`create record for ${name} fail: ${error}`)
@@ -40,7 +38,7 @@ export const realmUpdate = async (schema, name, obj) => {
         const realm = await Realm.open({
             path: 'aahk',
             schema: [schema],
-            encryptionKey: key
+            encryptionKey: KEY
         });
 
         //create data to schema
@@ -53,8 +51,6 @@ export const realmUpdate = async (schema, name, obj) => {
             }
         })
 
-        //close the realm
-        realm.close()
         console.log(`create record for ${name} successfully`)
     } catch (error) {
         console.log(`create record for ${name} fail: ${error}`)
@@ -69,7 +65,7 @@ export const realmDelete = async (schema, name) => {
         const realm = await Realm.open({
             path: 'aahk',
             schema: [schema],
-            encryptionKey: key
+            encryptionKey: KEY
         });
 
         //create data to schema
@@ -77,8 +73,6 @@ export const realmDelete = async (schema, name) => {
             realm.delete(realm.objects(name));
         })
 
-        //close the realm
-        realm.close()
         console.log(`delete record for ${name} successfully`)
     } catch (error) {
         console.log(`create record for ${name} fail: ${error}`)
