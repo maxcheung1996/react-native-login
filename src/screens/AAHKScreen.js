@@ -1,38 +1,54 @@
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet, ImageBackground} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import {Button, ActivityIndicator, MD2Colors} from 'react-native-paper';
+import {ActivityIndicator, MD2Colors, List} from 'react-native-paper';
+import {GlobalContext} from '../context/GlobalContext';
 
-const AAHKScreen = () => {
-  const {userInfo, isLoading, logout} = useContext(AuthContext);
+const AAHKScreen = ({navigation}) => {
+  const {isLoading} = useContext(AuthContext);
+  const {setAAHKTray} = useContext(GlobalContext);
+
+  const routeToScreen = DOOR_INSPECTION => {
+    setAAHKTray(DOOR_INSPECTION);
+    navigation.push('Building');
+  };
 
   return (
-    <View style={style.container}>
-      <ImageBackground
-        source={require('../images/app_bg.jpg')}
-        resizeMode="cover"
-        style={style.image}>
+    <>
+      <View style={style.container}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
-        <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
-        <Text>This is AAHK Screen.</Text>
-      </ImageBackground>
-    </View>
+        <List.Item
+          title="Door"
+          left={props => <List.Icon {...props} icon="door" />}
+          right={props => <List.Icon {...props} icon="arrow-right-thin" />}
+          onPress={() => {routeToScreen('DOOR_INSPECTION')}}
+          style={style.item}
+          titleStyle={{}}
+          descriptionStyle={{}}
+          titleEllipsizeMode="clip"
+          descriptionEllipsizeMode="tail"
+        />
+      </View>
+    </>
   );
 };
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 10,
   },
-  welcome: {
-    fontSize: 18,
-    marginBottom: 8,
+  item: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginVertical: 10,
+    elevation: 10,
+    shadowColor: '#52006A',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
-  image: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  card: {},
 });
 
 export default AAHKScreen;
