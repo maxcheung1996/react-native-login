@@ -1,80 +1,86 @@
-import Realm from "realm";
-import { KEY } from "../../config";
+import Realm from 'realm';
+import {KEY} from '../../config';
 
 export const realmCreate = async (schema, name, obj) => {
-    let count = 0;
-    //console.log(obj);
-    try {
-        //open a schema with encryption
-        const realm = await Realm.open({
-            path: 'aahk',
-            schema: [schema],
-            encryptionKey: KEY
-        });
+  let count = 0;
+  //console.log(obj);
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [schema],
+      encryptionKey: KEY,
+    });
 
-        //create data to schema
-        realm.write(() => {
-            if (obj.length > 0) {
-                for (const v of obj) {
-                    realm.create(name, v)
-                    count++;
-                }
-            }
-        })
+    //create data to schema
+    realm.write(() => {
+      if (obj.length > 0) {
+        for (const v of obj) {
+          realm.create(name, v);
+          count++;
+        }
+      }
+    });
 
-        console.log(`create record for ${name} successfully`)
-    } catch (error) {
-        console.log(`create record for ${name} fail: ${error}`)
-    } finally {
-        console.log(`total created record count ${count} for ${name}`)
-    }
-}
+    realm.close();
+
+    console.log(`create record for ${name} successfully`);
+  } catch (error) {
+    console.log(`create record for ${name} fail: ${error}`);
+  } finally {
+    console.log(`total created record count ${count} for ${name}`);
+  }
+};
 
 export const realmUpdate = async (schema, name, obj) => {
-    let count = 0;
+  let count = 0;
 
-    try {
-        //open a schema with encryption
-        const realm = await Realm.open({
-            path: 'aahk',
-            schema: [schema],
-            encryptionKey: KEY
-        });
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [schema],
+      encryptionKey: KEY,
+    });
 
-        //create data to schema
-        realm.write(() => {
-            if (obj.length > 0) {
-                for (const v of obj) {
-                    realm.create(name, v)
-                    count++;
-                }
-            }
-        })
+    //create data to schema
+    realm.write(() => {
+      if (obj.length > 0) {
+        for (const v of obj) {
+          realm.create(name, v);
+          count++;
+        }
+      }
+    });
 
-        console.log(`create record for ${name} successfully`)
-    } catch (error) {
-        console.log(`create record for ${name} fail: ${error}`)
-    } finally {
-        console.log(`total created record count ${count} for ${name}`)
-    }
-}
+    realm.close();
+
+    console.log(`create record for ${name} successfully`);
+  } catch (error) {
+    console.log(`create record for ${name} fail: ${error}`);
+  } finally {
+    console.log(`total created record count ${count} for ${name}`);
+  }
+};
 
 export const realmDelete = async (schema, name) => {
-    try {
-        //open a schema with encryption
-        const realm = await Realm.open({
-            path: 'aahk',
-            schema: [schema],
-            encryptionKey: KEY
-        });
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [schema],
+      encryptionKey: KEY,
+    });
 
-        //create data to schema
-        realm.write(() => {
-            realm.delete(realm.objects(name));
-        })
+    //create data to schema
+    realm.write(() => {
+      realm.delete(realm.objects(name));
+    });
 
-        console.log(`delete record for ${name} successfully`)
-    } catch (error) {
-        console.log(`create record for ${name} fail: ${error}`)
-    }
-}
+    realm.close();
+
+    console.log(`delete record for ${name} successfully`);
+  } catch (error) {
+    console.log(`create record for ${name} fail: ${error}`);
+  }
+};

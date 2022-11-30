@@ -1,5 +1,6 @@
 import Realm from 'realm';
 import {KEY} from './config';
+import {ActivityList} from './database/schema/ActivityList';
 import {userInfoTable} from './database/schema/User';
 
 export const getLocalTimeStamp = () => {
@@ -51,6 +52,30 @@ export const getLastLoginUserInfo = async () => {
   }
 };
 
+export const getBuildingFrDB = async cat => {
+  let buildingList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [ActivityList],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    buildingList = realm.objects('ActivityList');
+
+    console.log('buildingList: ', buildingList);
+
+    return buildingList;
+  } catch (error) {
+    console.log('getBuildingFrDB error: ', error);
+    return buildingList;
+  }
+};
+
 export const validateLogin = (email, password) => {
-  return email === null || password === null || email === '' || password === '' ? false : true;
+  return email === null || password === null || email === '' || password === ''
+    ? false
+    : true;
 };

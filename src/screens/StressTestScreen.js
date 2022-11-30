@@ -5,11 +5,11 @@ import {Button, ActivityIndicator, MD2Colors} from 'react-native-paper';
 import axios from 'axios';
 import {realmCreate, realmDelete} from '../database/service/crud';
 import {EformResultSubDetails} from '../database/schema/EformResultSubDetails';
-import { AahkActivityDetail } from '../database/schema/AahkActivityDetail';
-import { EformResultGlobal } from '../database/schema/EformResultGlobal';
-import { EformResultDetail } from '../database/schema/EformResultDetail';
-import { EformPhotoDetail } from '../database/schema/EformPhotoDetail';
-import { getLocalTimeStamp } from '../helper';
+import {AahkActivityDetail} from '../database/schema/AahkActivityDetail';
+import {EformResultGlobal} from '../database/schema/EformResultGlobal';
+import {EformResultDetail} from '../database/schema/EformResultDetail';
+import {EformPhotoDetail} from '../database/schema/EformPhotoDetail';
+import {getLocalTimeStamp} from '../helper';
 
 const StressTestScreen = () => {
   const {userInfo, isLoading} = useContext(AuthContext);
@@ -18,12 +18,11 @@ const StressTestScreen = () => {
   const [isDownloadLoading, setIsDownloadLoading] = useState(false);
 
   const download40Sub = async userInfo => {
-
     setIsDownloadLoading(true);
     let start_time = getLocalTimeStamp();
-  
+
     let obj;
-    
+
     //EformResultSubDetail
     await axios
       .get(
@@ -41,10 +40,10 @@ const StressTestScreen = () => {
       .catch(error => {
         console.log(`download40Sub fail: ${error}`);
       });
-  
+
     await realmDelete(EformResultSubDetails, 'EformResultSubDetails');
     await realmCreate(EformResultSubDetails, 'EformResultSubDetails', obj);
-  
+
     //Door
     await axios
       .get(
@@ -62,10 +61,10 @@ const StressTestScreen = () => {
       .catch(error => {
         console.log(`download40Sub fail: ${error}`);
       });
-  
+
     await realmDelete(AahkActivityDetail, 'AahkActivityDetail');
     await realmCreate(AahkActivityDetail, 'AahkActivityDetail', obj);
-  
+
     //Gobal
     await axios
       .get(
@@ -83,11 +82,10 @@ const StressTestScreen = () => {
       .catch(error => {
         console.log(`download40Sub fail: ${error}`);
       });
-  
+
     await realmDelete(EformResultGlobal, 'EformResultGlobal');
     await realmCreate(EformResultGlobal, 'EformResultGlobal', obj);
-  
-  
+
     //EformResultDetail
     await axios
       .get(
@@ -105,11 +103,10 @@ const StressTestScreen = () => {
       .catch(error => {
         console.log(`download40Sub fail: ${error}`);
       });
-  
+
     await realmDelete(EformResultDetail, 'EformResultDetail');
     await realmCreate(EformResultDetail, 'EformResultDetail', obj);
-    
-  
+
     //EformPhotoDetail
     await axios
       .get(
@@ -127,12 +124,12 @@ const StressTestScreen = () => {
       .catch(error => {
         console.log(`download40Sub fail: ${error}`);
       });
-  
+
     await realmDelete(EformPhotoDetail, 'EformPhotoDetail');
     await realmCreate(EformPhotoDetail, 'EformPhotoDetail', obj);
-  
+
     let end_time = getLocalTimeStamp();
-  
+
     setDownloadStartTimeStr(start_time);
     setDownloadEndTimeStr(end_time);
     setIsDownloadLoading(false);
@@ -146,11 +143,16 @@ const StressTestScreen = () => {
         source={require('../images/app_bg.jpg')}
         resizeMode="cover"
         style={style.image}>
-        <ActivityIndicator animating={isDownloadLoading} color={MD2Colors.purpleA700} />
+        <ActivityIndicator
+          animating={isDownloadLoading}
+          color={MD2Colors.purpleA700}
+        />
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
         <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
         <Text>This is Stress Test Screen.</Text>
-        <Text>Download Time: {downloadStartTimeStr} - {downloadEndTimeStr}</Text>
+        <Text>
+          Download Time: {downloadStartTimeStr} - {downloadEndTimeStr}
+        </Text>
         <Button
           disabled={isLoading}
           style={{marginTop: 20}}
@@ -164,7 +166,6 @@ const StressTestScreen = () => {
       </ImageBackground>
     </View>
   );
-  
 };
 
 const style = StyleSheet.create({
