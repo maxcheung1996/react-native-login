@@ -1,6 +1,7 @@
 export const EformResultSubDetails = {
     name: "EformResultSubDetails",
     properties: {
+        _id: 'string',
         eformResultSubDetailGuid: "string",
         eformResultDetailGuid: "string",
         eformResultGuid: "string",
@@ -24,5 +25,5 @@ export const EformResultSubDetails = {
         updatedBy: "string",
         updatedTimestamp: "date?"
     },
-    primaryKey: "eformResultSubDetailGuid",
+    primaryKey: "_id",
 };

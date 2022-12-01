@@ -1,6 +1,7 @@
 export const EformResultGlobal = {
     name: "EformResultGlobal",
     properties: {
+        _id: 'string',
         eformResultGlobalGuid: "string",
         eformResultGuid: "string",
         activityGuid: "string",
@@ -39,5 +40,5 @@ export const EformResultGlobal = {
         updatedTimestamp: "date?",
         eformResultGu: "string?"
     },
-    primaryKey: "eformResultGlobalGuid",
+    primaryKey: "_id",
 };

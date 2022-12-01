@@ -6,6 +6,8 @@ export const GlobalContext = React.createContext({});
 export const GlobalContextProvider = ({children}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [aahkTray, setAAHKTray] = useState("");
+  const [aahkBuilding, setAAHKBuilding] = useState("");
+  const [aahkWorksOrder, setAAHKWorksOrder] = useState("");
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -16,7 +18,7 @@ export const GlobalContextProvider = ({children}) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{isConnected, aahkTray, setAAHKTray}}>
+    <GlobalContext.Provider value={{isConnected, aahkTray, setAAHKTray, aahkBuilding, setAAHKBuilding, aahkWorksOrder, setAAHKWorksOrder}}>
       {children}
     </GlobalContext.Provider>
   );

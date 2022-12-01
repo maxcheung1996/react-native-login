@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL, FINGERPRINT_BYPASS} from '../config';
 import {realmCreate} from '../database/service/crud';
 import {userInfoTable} from '../database/schema/User';
-import {v4 as uuid} from 'uuid';
+import uuid from 'react-native-uuid';
 import {
   getLastLoginUserInfo,
   getLocalTimeStamp,
@@ -81,7 +81,7 @@ export const AuthContextProvider = ({children}) => {
   const insertLoggedLog = async (resp, email) => {
     let obj = [
       {
-        _id: uuid(),
+        _id: uuid.v4(),
         loginId: email,
         fullname: resp.fullname,
         email: resp.usermail ? resp.usermail : resp.email,

@@ -1,6 +1,7 @@
 export const ActivityList = {
-  name: 'ActivityList',
+  name: 'ActivityDetail',
   properties: {
+    _id: 'string',
     activityGuid: 'string',
     category: 'string',
     woNo: 'string',
@@ -16,5 +17,5 @@ export const ActivityList = {
     updatedTimestamp: 'date',
     completeD_PERCENTAGE: 'double',
   },
-  primaryKey: 'activityGuid',
+  primaryKey: '_id',
 };

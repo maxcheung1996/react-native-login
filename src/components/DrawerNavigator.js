@@ -14,7 +14,7 @@ const DrawerNavigator = () => {
   const {userInfo, splashLoading} = useContext(AuthContext);
 
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator screenOptions={{headerShown: false}}>
       {splashLoading ? (
         <Drawer.Screen name="Splash Screen" component={SplashScreen} />
       ) : userInfo.token ? (

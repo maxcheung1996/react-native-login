@@ -1,6 +1,7 @@
 export const AahkActivityDetail = {
     name: "AahkActivityDetail",
     properties: {
+        _id: 'string',
         activityDetailGuid: "string",
         activityGuid: "string",
         locationCode: "string",
@@ -20,5 +21,5 @@ export const AahkActivityDetail = {
         isSync: "string",
         testResult: "string"
     },
-    primaryKey: "activityDetailGuid",
+    primaryKey: "_id",
 };

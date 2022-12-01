@@ -42,10 +42,13 @@ export const getLastLoginUserInfo = async () => {
     });
 
     //get data from schema
-    const userInfoTask = realm.objects('userInfo');
-    userInfo = userInfoTask.sorted('createdAt', true);
-    //console.log('userInfo: ', userInfo[0]);
+    const userInfoTask = await realm
+      .objects('userInfo')
+      .sorted('createdAt', true);
+    userInfo = [...userInfoTask.toJSON()];
 
+    realm.close();
+    //console.log('userInfo: ', userInfo[0]);
     return userInfo;
   } catch (error) {
     return userInfo;
@@ -63,14 +66,67 @@ export const getBuildingFrDB = async cat => {
     });
 
     //get data from schema
-    buildingList = realm.objects('ActivityList');
+    const buildingListTask = realm
+      .objects('ActivityDetail')
+      .filtered(`category == '${cat}' DISTINCT(locationCode)`);
 
-    console.log('buildingList: ', buildingList);
+    buildingList = [...buildingListTask.toJSON()];
 
+    realm.close();
     return buildingList;
   } catch (error) {
     console.log('getBuildingFrDB error: ', error);
     return buildingList;
+  }
+};
+
+export const getWorksOrderFrDB = async (cat, aahkBuilding) => {
+  let worksOrderList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [ActivityList],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    const worksOrderListTask = realm
+      .objects('ActivityDetail')
+      .filtered(`category == '${cat}' && locationCode == '${aahkBuilding}' DISTINCT(woNo)`);
+
+    worksOrderList = [...worksOrderListTask.toJSON()];
+
+    realm.close();
+    return worksOrderList;
+  } catch (error) {
+    console.log('getWorksOrderFrDB error: ', error);
+    return worksOrderList;
+  }
+};
+
+export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder) => {
+  let FloorList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [ActivityList],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    const FloorTask = realm
+      .objects('ActivityDetail')
+      .filtered(`category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`);
+
+      FloorList = [...FloorTask.toJSON()];
+
+    realm.close();
+    return FloorList;
+  } catch (error) {
+    console.log('getFloorFrDB error: ', error);
+    return FloorList;
   }
 };
 

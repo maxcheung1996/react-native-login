@@ -1,6 +1,7 @@
 export const EformPhotoDetail = {
     name: "EformPhotoDetail",
     properties: {
+        _id: 'string',
         eformPhotoDetailGuid: "string",
         activityGuid: "string",
         category: "string",
@@ -19,5 +20,5 @@ export const EformPhotoDetail = {
         comFileGuid: "string?",
         refGuid: "string"
     },
-    primaryKey: "eformPhotoDetailGuid",
+    primaryKey: "_id",
 };

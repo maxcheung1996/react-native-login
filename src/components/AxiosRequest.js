@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const axiosRequest = async (url, token) => {
+const AxiosRequest = async (url, token) => {
   let result = [];
-  console.log(url);
-  console.log(token);
+  console.log(`AxiosRequest ~ ${url}`);
   try {
     await axios
       .get(url, {
@@ -15,13 +14,13 @@ const axiosRequest = async (url, token) => {
         result = res.data;
       })
       .catch(error => {
-        console.log(`axiosRequest fail: ${error}`);
+        console.log(`AxiosRequest fail: ${error}`);
       });
   } catch (error) {
-    console.log('axiosRequest error: ', error);
+    console.log('AxiosRequest error: ', error);
   }
 
   return result;
 };
 
-export default axiosRequest;
+export default AxiosRequest;
