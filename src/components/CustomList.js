@@ -1,16 +1,17 @@
-import {List} from 'react-native-paper';
+import {Button, List, MD3Colors, ProgressBar, Text} from 'react-native-paper';
+import uuid from 'react-native-uuid';
 
 const CustomList = (props) => {
   return (
     <>
       <List.Item
-        key={props.key}
+        key={uuid.v4()}
         title={props.title}
         description={props.description}
-        left={prop => (
+        left={(prop) => (
           <List.Icon {...prop} icon={props.icon} />
         )}
-        right={prop => <List.Icon {...prop} icon="arrow-right-thin" />}
+        right={props.rightIcon}
         onPress={props.onPress}
         style={props.style}
         titleStyle={{}}

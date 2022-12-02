@@ -8,6 +8,8 @@ export const GlobalContextProvider = ({children}) => {
   const [aahkTray, setAAHKTray] = useState("");
   const [aahkBuilding, setAAHKBuilding] = useState("");
   const [aahkWorksOrder, setAAHKWorksOrder] = useState("");
+  const [inspectorList, setInspectorList] = useState([]);
+  const [inspector, setInspector] = useState([]);
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -18,7 +20,7 @@ export const GlobalContextProvider = ({children}) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{isConnected, aahkTray, setAAHKTray, aahkBuilding, setAAHKBuilding, aahkWorksOrder, setAAHKWorksOrder}}>
+    <GlobalContext.Provider value={{inspector, setInspector, isConnected, aahkTray, setAAHKTray, aahkBuilding, setAAHKBuilding, aahkWorksOrder, setAAHKWorksOrder, inspectorList, setInspectorList}}>
       {children}
     </GlobalContext.Provider>
   );

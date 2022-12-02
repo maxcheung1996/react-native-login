@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import {ActivityIndicator, MD2Colors, List} from 'react-native-paper';
+import {ActivityIndicator, MD2Colors, List, Button} from 'react-native-paper';
 import {GlobalContext} from '../context/GlobalContext';
 import CustomList from '../components/CustomList';
 
@@ -68,6 +68,9 @@ const AAHKScreen = ({navigation}) => {
               onPress={() => {
                 routeToScreen(v.category, 'Building', setAAHKTray);
               }}
+              rightIcon={(prop) => (
+                <List.Icon {...prop} icon={"arrow-right-thin"} />
+              )}
             />
           );
         })}

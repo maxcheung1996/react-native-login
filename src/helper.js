@@ -1,6 +1,8 @@
+import { Avatar } from 'react-native-paper';
 import Realm from 'realm';
 import {KEY} from './config';
 import {ActivityList} from './database/schema/ActivityList';
+import { InspectorList } from './database/schema/InspectorList';
 import {userInfoTable} from './database/schema/User';
 
 export const getLocalTimeStamp = () => {
@@ -55,6 +57,34 @@ export const getLastLoginUserInfo = async () => {
   }
 };
 
+export const getInspectorListFrDB = async () => {
+  let inspectorList = [];
+  let return_inspectorList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [InspectorList],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    const inspectorListTask = realm.objects('InspectorList');
+
+    inspectorList = [...inspectorListTask.toJSON()];
+
+    for(const inspector of inspectorList){
+      return_inspectorList.push({label: inspector.fullName, value: inspector.userGuid, icon: () => <Avatar.Icon backgroundColor="lightgrey" color='black' style={{marginLeft: 8}} size={23} icon="human-greeting-variant" />})
+    }
+    
+    realm.close();
+    return return_inspectorList;
+  } catch (error) {
+    console.log('getInspectorListFrDB error: ', error);
+    return return_inspectorList;
+  }
+};
+
 export const getBuildingFrDB = async cat => {
   let buildingList = [];
   try {
@@ -80,7 +110,7 @@ export const getBuildingFrDB = async cat => {
   }
 };
 
-export const getWorksOrderFrDB = async (cat, aahkBuilding) => {
+export const getWorksOrderFrDB = async (cat, aahkBuilding, setState) => {
   let worksOrderList = [];
   try {
     //open a schema with encryption
@@ -93,19 +123,22 @@ export const getWorksOrderFrDB = async (cat, aahkBuilding) => {
     //get data from schema
     const worksOrderListTask = realm
       .objects('ActivityDetail')
-      .filtered(`category == '${cat}' && locationCode == '${aahkBuilding}' DISTINCT(woNo)`);
+      .filtered(
+        `category == '${cat}' && locationCode == '${aahkBuilding}' DISTINCT(woNo)`,
+      );
 
-    worksOrderList = [...worksOrderListTask.toJSON()];
+    setState([...worksOrderListTask.toJSON()]);
 
     realm.close();
     return worksOrderList;
   } catch (error) {
     console.log('getWorksOrderFrDB error: ', error);
+    setState(worksOrderList);
     return worksOrderList;
   }
 };
 
-export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder) => {
+export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder, setState) => {
   let FloorList = [];
   try {
     //open a schema with encryption
@@ -118,15 +151,18 @@ export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder) => {
     //get data from schema
     const FloorTask = realm
       .objects('ActivityDetail')
-      .filtered(`category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`);
+      .filtered(
+        `category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`,
+      );
 
-      FloorList = [...FloorTask.toJSON()];
-
+    setState([...FloorTask.toJSON()])
     realm.close();
-    return FloorList;
+    
+    return;
   } catch (error) {
     console.log('getFloorFrDB error: ', error);
-    return FloorList;
+    setState(FloorList)
+    return;
   }
 };
 
@@ -134,4 +170,13 @@ export const validateLogin = (email, password) => {
   return email === null || password === null || email === '' || password === ''
     ? false
     : true;
+};
+
+export const convertDateString = (dateStr) => {
+  const date = new Date(dateStr);
+  const day = ('0' + date.getDate().toString()).slice(-2);
+  const year = date.getFullYear().toString();
+  const month = ('0' + (date.getMonth() + 1).toString()).slice(-2);
+
+  return day + '-' + month + '-' + year;
 };
