@@ -1,13 +1,24 @@
 import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
-import {convertDateString, getFloorFrDB} from '../helper';
+import {
+  convertDateString,
+  dlAllActivityDataStart,
+  getFloorFrDB,
+} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {ProgressBar, Text, Button} from 'react-native-paper';
+import {
+  ProgressBar,
+  Text,
+  Button,
+  ActivityIndicator,
+  MD2Colors,
+} from 'react-native-paper';
+import {AuthContext} from '../context/AuthContext';
 
-const FloorScreen = () => {
+const FloorScreen = ({navigation}) => {
   const {
     aahkTray,
     aahkBuilding,
@@ -16,16 +27,55 @@ const FloorScreen = () => {
     setInspectorList,
     inspector,
     setInspector,
+    setActivityGuid,
+    setGlobalFloor,
   } = useContext(GlobalContext);
   const [floor, setFloor] = useState([]);
   const [open, setOpen] = useState(false);
+  const {userInfo} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [index, setIndex] = useState(-1);
 
   useEffect(() => {
     getFloorFrDB(aahkTray, aahkBuilding, aahkWorksOrder, setFloor);
   }, []);
 
+  const routeToScreen = (
+    floorState,
+    activityState,
+    screen,
+    setFloorState,
+    setActivityState,
+  ) => {
+    setFloorState(floorState);
+    setActivityState(activityState);
+    navigation.push(screen);
+  };
+
+  const dlAllActivityData = async (activityGuid, floor, userInfo) => {
+    setIsLoading(true);
+    setIndex(1000);
+    await dlAllActivityDataStart(userInfo, activityGuid, floor);
+    setIndex(-1);
+    setIsLoading(false);
+  };
+
   return (
     <>
+      <ActivityIndicator
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: index,
+        }}
+        animating={isLoading}
+        color={MD2Colors.purpleA700}
+      />
       <View style={style.dropDownPickerView}>
         <DropDownPicker
           style={style.dropDownPicker}
@@ -45,6 +95,7 @@ const FloorScreen = () => {
           placeholder={'Please select a Inspector'}
         />
       </View>
+
       <ScrollView contentContainerStyle={style.scrollView}>
         {floor.map((v, i) => {
           return (
@@ -56,7 +107,7 @@ const FloorScreen = () => {
                     {v.woNo} - {v.locationDesc} - {v.completeD_PERCENTAGE}%
                   </Text>
                   <ProgressBar
-                    progress={v.completeD_PERCENTAGE/100}
+                    progress={v.completeD_PERCENTAGE / 100}
                     color="lightgreen"
                   />
                 </>
@@ -66,13 +117,27 @@ const FloorScreen = () => {
               )} - ${convertDateString(v.endDatetime)}`}
               icon={'stairs'}
               style={style.item}
-              onPress={() => {}}
+              onPress={() => {
+                routeToScreen(
+                  v.locationDesc,
+                  v.activityGuid,
+                  'Door',
+                  setGlobalFloor,
+                  setActivityGuid,
+                );
+              }}
               rightIcon={prop => (
                 <Button
                   icon="cloud-download-outline"
                   {...prop}
                   mode="text"
-                  onPress={() => alert('Pressed')}>
+                  onPress={async () =>
+                    await dlAllActivityData(
+                      v.activityGuid,
+                      v.locationDesc,
+                      userInfo,
+                    )
+                  }>
                   Download
                 </Button>
               )}

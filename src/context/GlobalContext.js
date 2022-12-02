@@ -5,11 +5,13 @@ export const GlobalContext = React.createContext({});
 
 export const GlobalContextProvider = ({children}) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [aahkTray, setAAHKTray] = useState("");
-  const [aahkBuilding, setAAHKBuilding] = useState("");
-  const [aahkWorksOrder, setAAHKWorksOrder] = useState("");
+  const [aahkTray, setAAHKTray] = useState('');
+  const [aahkBuilding, setAAHKBuilding] = useState('');
+  const [aahkWorksOrder, setAAHKWorksOrder] = useState('');
   const [inspectorList, setInspectorList] = useState([]);
   const [inspector, setInspector] = useState([]);
+  const [activityGuid, setActivityGuid] = useState('');
+  const [floor, setGlobalFloor] = useState('');
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -20,7 +22,24 @@ export const GlobalContextProvider = ({children}) => {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{inspector, setInspector, isConnected, aahkTray, setAAHKTray, aahkBuilding, setAAHKBuilding, aahkWorksOrder, setAAHKWorksOrder, inspectorList, setInspectorList}}>
+    <GlobalContext.Provider
+      value={{
+        activityGuid,
+        setActivityGuid,
+        floor,
+        setGlobalFloor,
+        inspector,
+        setInspector,
+        isConnected,
+        aahkTray,
+        setAAHKTray,
+        aahkBuilding,
+        setAAHKBuilding,
+        aahkWorksOrder,
+        setAAHKWorksOrder,
+        inspectorList,
+        setInspectorList,
+      }}>
       {children}
     </GlobalContext.Provider>
   );

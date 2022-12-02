@@ -1,9 +1,17 @@
-import { Avatar } from 'react-native-paper';
+import {Avatar} from 'react-native-paper';
 import Realm from 'realm';
 import {KEY} from './config';
+import {EformResultSubDetails} from './database/schema/EformResultSubDetails';
+import {AahkActivityDetail} from './database/schema/AahkActivityDetail';
+import {EformResultGlobal} from './database/schema/EformResultGlobal';
+import {EformResultDetail} from './database/schema/EformResultDetail';
+import {EformPhotoDetail} from './database/schema/EformPhotoDetail';
 import {ActivityList} from './database/schema/ActivityList';
-import { InspectorList } from './database/schema/InspectorList';
+import {InspectorList} from './database/schema/InspectorList';
 import {userInfoTable} from './database/schema/User';
+import {realmCreate, realmDelete} from './database/service/crud';
+import {BASE_URL} from './config';
+import AxiosRequest from './components/AxiosRequest';
 
 export const getLocalTimeStamp = () => {
   Date.prototype.toISOString = function () {
@@ -73,10 +81,22 @@ export const getInspectorListFrDB = async () => {
 
     inspectorList = [...inspectorListTask.toJSON()];
 
-    for(const inspector of inspectorList){
-      return_inspectorList.push({label: inspector.fullName, value: inspector.userGuid, icon: () => <Avatar.Icon backgroundColor="lightgrey" color='black' style={{marginLeft: 8}} size={23} icon="human-greeting-variant" />})
+    for (const inspector of inspectorList) {
+      return_inspectorList.push({
+        label: inspector.fullName,
+        value: inspector.userGuid,
+        icon: () => (
+          <Avatar.Icon
+            backgroundColor="lightgrey"
+            color="black"
+            style={{marginLeft: 8}}
+            size={23}
+            icon="human-greeting-variant"
+          />
+        ),
+      });
     }
-    
+
     realm.close();
     return return_inspectorList;
   } catch (error) {
@@ -138,7 +158,12 @@ export const getWorksOrderFrDB = async (cat, aahkBuilding, setState) => {
   }
 };
 
-export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder, setState) => {
+export const getFloorFrDB = async (
+  cat,
+  aahkBuilding,
+  aahkWorksOrder,
+  setState,
+) => {
   let FloorList = [];
   try {
     //open a schema with encryption
@@ -155,13 +180,13 @@ export const getFloorFrDB = async (cat, aahkBuilding, aahkWorksOrder, setState) 
         `category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`,
       );
 
-    setState([...FloorTask.toJSON()])
+    setState([...FloorTask.toJSON()]);
     realm.close();
-    
+
     return;
   } catch (error) {
     console.log('getFloorFrDB error: ', error);
-    setState(FloorList)
+    setState(FloorList);
     return;
   }
 };
@@ -172,11 +197,103 @@ export const validateLogin = (email, password) => {
     : true;
 };
 
-export const convertDateString = (dateStr) => {
+export const convertDateString = dateStr => {
   const date = new Date(dateStr);
   const day = ('0' + date.getDate().toString()).slice(-2);
   const year = date.getFullYear().toString();
   const month = ('0' + (date.getMonth() + 1).toString()).slice(-2);
 
   return day + '-' + month + '-' + year;
+};
+
+export const dlAllActivityDataStart = async (userInfo, activityGuid, floor) => {
+  //Door
+  await axiosToRealmDB(
+    userInfo.token,
+    activityGuid,
+    floor,
+    'AahkActivityDetail',
+    AahkActivityDetail,
+    'AahkActivityDetail',
+  );
+  //Gobal
+  await axiosToRealmDB(
+    userInfo.token,
+    activityGuid,
+    floor,
+    'EformResultGlobal',
+    EformResultGlobal,
+    'EformResultGlobal',
+  );
+  //EformResultDetail
+  await axiosToRealmDB(
+    userInfo.token,
+    activityGuid,
+    floor,
+    'EformResultDetail',
+    EformResultDetail,
+    'EformResultDetail',
+  );
+  //EformResultSubDetail
+  await axiosToRealmDB(
+    userInfo.token,
+    activityGuid,
+    floor,
+    'EformResultSubDetail',
+    EformResultSubDetails,
+    'EformResultSubDetails',
+  );
+  //EformPhotoDetail
+  await axiosToRealmDB(
+    userInfo.token,
+    activityGuid,
+    floor,
+    'EformPhotoDetail/getphotodtl',
+    EformPhotoDetail,
+    'EformPhotoDetail',
+  );
+};
+
+const axiosToRealmDB = async (
+  token,
+  activityGuid,
+  floor,
+  apiName,
+  schema,
+  name,
+) => {
+  const obj = await AxiosRequest(
+    `${BASE_URL}${apiName}?iniid=${activityGuid}&floor=${floor}`,
+    token,
+  );
+  await realmDelete(schema, name);
+  await realmCreate(schema, name, obj);
+};
+
+export const getDoorFrDB = async (activityGuid, floor, setState) => {
+  let doorList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [AahkActivityDetail],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    const doorListTask = realm
+      .objects('AahkActivityDetail')
+      .filtered(
+        `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
+      );
+
+    setState([...doorListTask.toJSON()]);
+
+    realm.close();
+    return doorList;
+  } catch (error) {
+    console.log('getDoorFrDB error: ', error);
+    setState(doorList);
+    return doorList;
+  }
 };
