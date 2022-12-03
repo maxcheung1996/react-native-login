@@ -297,3 +297,49 @@ export const getDoorFrDB = async (activityGuid, floor, setState) => {
     return doorList;
   }
 };
+
+export const checkIfDoorDownloaded = async (floors, activityGuid, setState) => {
+  let doorList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [AahkActivityDetail],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    for (const floor of floors) {
+      let doorListTask = realm
+        .objects('AahkActivityDetail')
+        .filtered(
+          `activityGuid == '${activityGuid}' && locationDesc == '${floor.locationDesc}' DISTINCT(doorNo)`,
+        );
+
+      if (doorListTask.length > 0) {
+        doorList.push(floor.locationDesc);
+      }
+    }
+
+    setState([...doorList]);
+
+    alert(doorList);
+
+    realm.close();
+    return doorList;
+  } catch (error) {
+    console.log('getDoorFrDB error: ', error);
+    setState([...doorList]);
+    return doorList;
+  }
+};
+
+export const getColorByStatus = status => {
+  return status == 'COMPLETED'
+    ? 'green'
+    : 'ISSUES'
+    ? 'yellow'
+    : 'PROGRESS'
+    ? 'blue'
+    : '';
+};

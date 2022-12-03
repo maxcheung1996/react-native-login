@@ -4,18 +4,26 @@ import {getWorksOrderFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
-import { List } from 'react-native-paper';
+import {List} from 'react-native-paper';
 
 const WorksOrderScreen = ({navigation}) => {
-  const {aahkTray, aahkBuilding, setAAHKWorksOrder} = useContext(GlobalContext);
+  const {aahkTray, aahkBuilding, setAAHKWorksOrder, setActivityGuid} =
+    useContext(GlobalContext);
   const [worksOrder, setWorksOrder] = useState([]);
 
   useEffect(() => {
     getWorksOrderFrDB(aahkTray, aahkBuilding, setWorksOrder);
   }, []);
 
-  const routeToScreen = (state, screen, setState) => {
+  const routeToScreen = (
+    state,
+    screen,
+    setState,
+    setActivityGuid,
+    activityGuid,
+  ) => {
     setState(state);
+    setActivityGuid(activityGuid);
     navigation.push(screen);
   };
 
@@ -31,10 +39,16 @@ const WorksOrderScreen = ({navigation}) => {
               icon={'order-bool-descending-variant'}
               style={style.item}
               onPress={() => {
-                routeToScreen(v.woNo, 'Floor', setAAHKWorksOrder);
+                routeToScreen(
+                  v.woNo,
+                  'Floor',
+                  setAAHKWorksOrder,
+                  setActivityGuid,
+                  v.activityGuid,
+                );
               }}
-              rightIcon={(prop) => (
-                <List.Icon {...prop} icon={"arrow-right-thin"} />
+              rightIcon={prop => (
+                <List.Icon {...prop} icon={'arrow-right-thin'} />
               )}
             />
           );

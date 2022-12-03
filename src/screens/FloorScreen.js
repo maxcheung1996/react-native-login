@@ -1,6 +1,7 @@
 import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
 import {
+  checkIfDoorDownloaded,
   convertDateString,
   dlAllActivityDataStart,
   getFloorFrDB,
@@ -29,15 +30,18 @@ const FloorScreen = ({navigation}) => {
     setInspector,
     setActivityGuid,
     setGlobalFloor,
+    activityGuid,
   } = useContext(GlobalContext);
   const [floor, setFloor] = useState([]);
   const [open, setOpen] = useState(false);
   const {userInfo} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [index, setIndex] = useState(-1);
+  const [checkDoorList, setCheckDoorList] = useState([]);
 
   useEffect(() => {
     getFloorFrDB(aahkTray, aahkBuilding, aahkWorksOrder, setFloor);
+    checkIfDoorDownloaded(floor, activityGuid, setCheckDoorList);
   }, []);
 
   const routeToScreen = (

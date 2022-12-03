@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
-import {getDoorFrDB} from '../helper';
+import {getColorByStatus, getDoorFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
@@ -25,10 +25,11 @@ const DoorScreen = ({navigation}) => {
         {door.map((v, i) => {
           return (
             <CustomList
+              leftIconColor={getColorByStatus(v.status)}
               key={i}
               title={v.doorNo}
-              description={''}
-              icon={'order-bool-descending-variant'}
+              description={v.testResult}
+              icon={'checkbox-blank-circle'}
               style={style.item}
               onPress={() => {
                 routeToScreen(v.doorNo, 'CheckList', setAAHKDoor);
