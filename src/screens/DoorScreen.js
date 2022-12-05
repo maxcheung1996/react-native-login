@@ -1,18 +1,30 @@
-import {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
 import {getColorByStatus, getDoorFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
-import {List} from 'react-native-paper';
+import {List, Searchbar, SegmentedButtons} from 'react-native-paper';
 
 const DoorScreen = ({navigation}) => {
   const {activityGuid, floor, setAAHKDoor} = useContext(GlobalContext);
   const [door, setDoor] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+  const onChangeSearch = query => setSearchQuery(query);
+  const [value, setValue] = React.useState('');
 
   useEffect(() => {
-    getDoorFrDB(activityGuid, floor, setDoor);
+    getDoorFrDB(activityGuid, floor, setDoor, setFilteredData);
   }, []);
+
+  useEffect(() => {
+    //console.log('searchQuery: ', searchQuery.trim());
+    let tempSearchResult = door.filter(ele =>
+      ele.doorNo.includes(searchQuery.trim()),
+    );
+    setFilteredData([...tempSearchResult]);
+  }, [searchQuery]);
 
   const routeToScreen = (state, screen, setState) => {
     setState(state);
@@ -20,9 +32,34 @@ const DoorScreen = ({navigation}) => {
   };
 
   return (
-    <View style={style.container}>
+    <>
+      <View style={style.container}>
+        <SegmentedButtons
+          value={value}
+          onValueChange={setValue}
+          buttons={[
+            {
+              value: 'ISSUES',
+              label: 'Issues',
+            },
+            {
+              value: 'IN_PROGRESS',
+              label: 'In Progress',
+            },
+            {value: 'COMPLETED', label: 'Completed'},
+          ]}
+        />
+        <Searchbar
+          style={style.searchBar}
+          elevation="3"
+          placeholderTextColor={'grey'}
+          placeholder="Search..."
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+        />
+      </View>
       <ScrollView contentContainerStyle={style.scrollView}>
-        {door.map((v, i) => {
+        {filteredData.map((v, i) => {
           return (
             <CustomList
               leftIconColor={getColorByStatus(v.status)}
@@ -32,7 +69,7 @@ const DoorScreen = ({navigation}) => {
               icon={'checkbox-blank-circle'}
               style={style.item}
               onPress={() => {
-                routeToScreen(v.doorNo, 'CheckList', setAAHKDoor);
+                //routeToScreen(v.doorNo, 'CheckList', setAAHKDoor);
               }}
               rightIcon={prop => (
                 <List.Icon {...prop} icon={'arrow-right-thin'} />
@@ -41,20 +78,25 @@ const DoorScreen = ({navigation}) => {
           );
         })}
       </ScrollView>
-    </View>
+    </>
   );
 };
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+    alignItems: 'center',
   },
   scrollView: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
     alignItems: 'center',
   },
   item: {
-    width: '95%',
+    width: '100%',
     backgroundColor: 'white',
     borderRadius: 8,
     marginVertical: 10,
@@ -63,6 +105,10 @@ const style = StyleSheet.create({
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,
     shadowRadius: 3,
+  },
+  searchBar: {
+    backgroundColor: 'white',
+    marginTop: 10,
   },
 });
 

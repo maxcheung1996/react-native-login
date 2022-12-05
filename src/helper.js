@@ -180,14 +180,22 @@ export const getFloorFrDB = async (
         `category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`,
       );
 
+    FloorList = [...FloorTask.toJSON()];
+
     setState([...FloorTask.toJSON()]);
     realm.close();
+    console.log('realm.close');
+    // await checkIfDoorDownloaded(
+    //   [...FloorTask.toJSON()],
+    //   activityGuid,
+    //   setCheckDoorList,
+    // );
 
-    return;
+    return FloorList;
   } catch (error) {
     console.log('getFloorFrDB error: ', error);
     setState(FloorList);
-    return;
+    return FloorList;
   }
 };
 
@@ -215,16 +223,49 @@ export const dlAllActivityDataStart = async (userInfo, activityGuid, floor) => {
     'AahkActivityDetail',
     AahkActivityDetail,
     'AahkActivityDetail',
+    `activityGuid == '${activityGuid}' && locationDesc == '${floor}'`,
   );
   //Gobal
-  await axiosToRealmDB(
+  let resp = [];
+
+  resp = await axiosToRealmDB(
     userInfo.token,
     activityGuid,
     floor,
     'EformResultGlobal',
     EformResultGlobal,
     'EformResultGlobal',
+    `activityGuid == '${activityGuid}' && location == '${floor}'`,
   );
+
+  let eformResultGuid_filtered_str = '';
+  let eformResultGuid = [];
+
+  for (const respItem of resp) {
+    eformResultGuid.push(respItem.eformResultGuid);
+  }
+
+  try {
+    eformResultGuid_filtered_str = JSON.stringify(eformResultGuid);
+    eformResultGuid_filtered_str = eformResultGuid_filtered_str.replace(
+      '[',
+      '{',
+    );
+    eformResultGuid_filtered_str = eformResultGuid_filtered_str.replace(
+      ']',
+      '}',
+    );
+    eformResultGuid_filtered_str = eformResultGuid_filtered_str.replaceAll(
+      '"',
+      "'",
+    );
+    //console.log(eformResultGuid_filtered_str);
+  } catch (error) {
+    console.log('eformResultGuid error: ', error);
+  }
+
+  //await getEformResultFrDB();
+
   //EformResultDetail
   await axiosToRealmDB(
     userInfo.token,
@@ -233,6 +274,7 @@ export const dlAllActivityDataStart = async (userInfo, activityGuid, floor) => {
     'EformResultDetail',
     EformResultDetail,
     'EformResultDetail',
+    `eformResultGuid IN ${eformResultGuid_filtered_str}`,
   );
   //EformResultSubDetail
   await axiosToRealmDB(
@@ -242,6 +284,7 @@ export const dlAllActivityDataStart = async (userInfo, activityGuid, floor) => {
     'EformResultSubDetail',
     EformResultSubDetails,
     'EformResultSubDetails',
+    `eformResultGuid IN ${eformResultGuid_filtered_str}`,
   );
   //EformPhotoDetail
   await axiosToRealmDB(
@@ -251,6 +294,7 @@ export const dlAllActivityDataStart = async (userInfo, activityGuid, floor) => {
     'EformPhotoDetail/getphotodtl',
     EformPhotoDetail,
     'EformPhotoDetail',
+    `refGuid IN ${eformResultGuid_filtered_str}`,
   );
 };
 
@@ -261,16 +305,57 @@ const axiosToRealmDB = async (
   apiName,
   schema,
   name,
+  delFilter = '',
 ) => {
+  let result = [];
+
   const obj = await AxiosRequest(
     `${BASE_URL}${apiName}?iniid=${activityGuid}&floor=${floor}`,
     token,
   );
-  await realmDelete(schema, name);
+  await realmDelete(schema, name, delFilter);
   await realmCreate(schema, name, obj);
+
+  result = [...obj];
+
+  return result;
 };
 
-export const getDoorFrDB = async (activityGuid, floor, setState) => {
+export const getDoorFrDB = async (
+  activityGuid,
+  floor,
+  setState,
+  setFilteredData,
+) => {
+  let doorList = [];
+  try {
+    //open a schema with encryption
+    const realm = await Realm.open({
+      path: 'aahk',
+      schema: [AahkActivityDetail],
+      encryptionKey: KEY,
+    });
+
+    //get data from schema
+    const doorListTask = realm
+      .objects('AahkActivityDetail')
+      .filtered(
+        `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
+      );
+
+    setFilteredData([...doorListTask.toJSON()]);
+    setState([...doorListTask.toJSON()]);
+
+    realm.close();
+    return doorList;
+  } catch (error) {
+    console.log('getDoorFrDB error: ', error);
+    setState(doorList);
+    return doorList;
+  }
+};
+
+export const getEformResultFrDB = async (activityGuid, floor, setState) => {
   let doorList = [];
   try {
     //open a schema with encryption
@@ -300,6 +385,7 @@ export const getDoorFrDB = async (activityGuid, floor, setState) => {
 
 export const checkIfDoorDownloaded = async (floors, activityGuid, setState) => {
   let doorList = [];
+  // console.log('floors: ', floors);
   try {
     //open a schema with encryption
     const realm = await Realm.open({
@@ -316,21 +402,26 @@ export const checkIfDoorDownloaded = async (floors, activityGuid, setState) => {
           `activityGuid == '${activityGuid}' && locationDesc == '${floor.locationDesc}' DISTINCT(doorNo)`,
         );
 
-      if (doorListTask.length > 0) {
+      // console.log(
+      //   `activityGuid == '${activityGuid}' && locationDesc == '${floor.locationDesc}' DISTINCT(doorNo)`,
+      // );
+      let tempList = [...doorListTask.toJSON()];
+
+      // console.log(tempList);
+
+      if (tempList.length > 0) {
         doorList.push(floor.locationDesc);
       }
     }
-
+    //console.log('doorList: ', doorList);
     setState([...doorList]);
-
-    alert(doorList);
-
     realm.close();
-    return doorList;
+
+    return;
   } catch (error) {
     console.log('getDoorFrDB error: ', error);
     setState([...doorList]);
-    return doorList;
+    return;
   }
 };
 

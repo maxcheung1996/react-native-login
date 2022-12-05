@@ -16,6 +16,8 @@ import {
   Button,
   ActivityIndicator,
   MD2Colors,
+  IconButton,
+  MD3Colors,
 } from 'react-native-paper';
 import {AuthContext} from '../context/AuthContext';
 
@@ -40,8 +42,11 @@ const FloorScreen = ({navigation}) => {
   const [checkDoorList, setCheckDoorList] = useState([]);
 
   useEffect(() => {
-    getFloorFrDB(aahkTray, aahkBuilding, aahkWorksOrder, setFloor);
-    checkIfDoorDownloaded(floor, activityGuid, setCheckDoorList);
+    getFloorFrDB(aahkTray, aahkBuilding, aahkWorksOrder, setFloor).then(
+      resp => {
+        checkIfDoorDownloaded(resp, activityGuid, setCheckDoorList);
+      },
+    );
   }, []);
 
   const routeToScreen = (
@@ -56,10 +61,11 @@ const FloorScreen = ({navigation}) => {
     navigation.push(screen);
   };
 
-  const dlAllActivityData = async (activityGuid, floor, userInfo) => {
+  const dlAllActivityData = async (activityGuid, floorL, userInfo) => {
     setIsLoading(true);
     setIndex(1000);
-    await dlAllActivityDataStart(userInfo, activityGuid, floor);
+    await dlAllActivityDataStart(userInfo, activityGuid, floorL);
+    await checkIfDoorDownloaded(floor, activityGuid, setCheckDoorList);
     setIndex(-1);
     setIsLoading(false);
   };
@@ -131,19 +137,26 @@ const FloorScreen = ({navigation}) => {
                 );
               }}
               rightIcon={prop => (
-                <Button
-                  icon="cloud-download-outline"
-                  {...prop}
-                  mode="text"
+                <IconButton
+                  size={22}
+                  iconColor={
+                    checkDoorList.includes(v.locationDesc)
+                      ? MD3Colors.primary40
+                      : MD3Colors.primary80
+                  }
+                  icon={
+                    checkDoorList.includes(v.locationDesc)
+                      ? 'reload'
+                      : 'cloud-download-outline'
+                  }
                   onPress={async () =>
                     await dlAllActivityData(
                       v.activityGuid,
                       v.locationDesc,
                       userInfo,
                     )
-                  }>
-                  Download
-                </Button>
+                  }
+                />
               )}
             />
           );
