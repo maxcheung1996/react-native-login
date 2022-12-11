@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL, FINGERPRINT_BYPASS} from '../config';
 import {realmCreate} from '../database/service/crud';
@@ -10,6 +10,7 @@ import {
   getLocalTimeStamp,
   validateLogin,
 } from '../helper';
+import {GlobalContext} from './GlobalContext';
 
 export const AuthContext = React.createContext({});
 
@@ -19,6 +20,7 @@ export const AuthContextProvider = ({children}) => {
   const [splashLoading, setSplashLoading] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [loginMsg, setLoginMsg] = useState('');
+  const {isConnected} = useContext(GlobalContext);
 
   const login = async (email, password) => {
     setIsLoading(true);
@@ -29,6 +31,14 @@ export const AuthContextProvider = ({children}) => {
       return;
     }
     if (email !== FINGERPRINT_BYPASS && password !== 'SOCAM_BIO') {
+      if (!isConnected) {
+        loginReturnMsg(
+          `No network! Please try to use biometrics login if available.`,
+          true,
+          false,
+        );
+        return;
+      }
       await axios
         .post(`${BASE_URL}Authenticate/login`, {
           Username: email,

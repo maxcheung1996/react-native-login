@@ -23,6 +23,7 @@ import {AuthContext} from '../context/AuthContext';
 
 const FloorScreen = ({navigation}) => {
   const {
+    isConnected,
     aahkTray,
     aahkBuilding,
     aahkWorksOrder,
@@ -140,21 +141,28 @@ const FloorScreen = ({navigation}) => {
                 <IconButton
                   size={22}
                   iconColor={
-                    checkDoorList.includes(v.locationDesc)
+                    !isConnected
+                      ? 'red'
+                      : checkDoorList.includes(v.locationDesc)
                       ? MD3Colors.primary40
                       : MD3Colors.primary80
                   }
                   icon={
-                    checkDoorList.includes(v.locationDesc)
+                    !isConnected
+                      ? 'access-point-network-off'
+                      : checkDoorList.includes(v.locationDesc)
                       ? 'reload'
                       : 'cloud-download-outline'
                   }
-                  onPress={async () =>
-                    await dlAllActivityData(
-                      v.activityGuid,
-                      v.locationDesc,
-                      userInfo,
-                    )
+                  onPress={
+                    isConnected
+                      ? async () =>
+                          await dlAllActivityData(
+                            v.activityGuid,
+                            v.locationDesc,
+                            userInfo,
+                          )
+                      : () => {}
                   }
                 />
               )}

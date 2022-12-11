@@ -12,6 +12,8 @@ export const GlobalContextProvider = ({children}) => {
   const [inspector, setInspector] = useState([]);
   const [activityGuid, setActivityGuid] = useState('');
   const [floor, setGlobalFloor] = useState('');
+  const [aahkDoor, setAAHKDoor] = useState('');
+  const [eformResultGuid, setEformResultGuid] = useState('');
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -24,6 +26,10 @@ export const GlobalContextProvider = ({children}) => {
   return (
     <GlobalContext.Provider
       value={{
+        eformResultGuid,
+        setEformResultGuid,
+        aahkDoor,
+        setAAHKDoor,
         activityGuid,
         setActivityGuid,
         floor,

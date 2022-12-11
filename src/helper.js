@@ -184,12 +184,6 @@ export const getFloorFrDB = async (
 
     setState([...FloorTask.toJSON()]);
     realm.close();
-    console.log('realm.close');
-    // await checkIfDoorDownloaded(
-    //   [...FloorTask.toJSON()],
-    //   activityGuid,
-    //   setCheckDoorList,
-    // );
 
     return FloorList;
   } catch (error) {
@@ -427,10 +421,10 @@ export const checkIfDoorDownloaded = async (floors, activityGuid, setState) => {
 
 export const getColorByStatus = status => {
   return status == 'COMPLETED'
-    ? 'green'
-    : 'ISSUES'
-    ? 'yellow'
-    : 'PROGRESS'
-    ? 'blue'
+    ? '#00FF00'
+    : status == 'ISSUE'
+    ? '#FFA500'
+    : status == 'PROGRESS'
+    ? '#16bbff'
     : '';
 };

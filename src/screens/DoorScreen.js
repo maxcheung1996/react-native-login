@@ -7,7 +7,13 @@ import CustomList from '../components/CustomList';
 import {List, Searchbar, SegmentedButtons} from 'react-native-paper';
 
 const DoorScreen = ({navigation}) => {
-  const {activityGuid, floor, setAAHKDoor} = useContext(GlobalContext);
+  const {
+    activityGuid,
+    floor,
+    setAAHKDoor,
+    eformResultGuid,
+    setEformResultGuid,
+  } = useContext(GlobalContext);
   const [door, setDoor] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
@@ -20,15 +26,31 @@ const DoorScreen = ({navigation}) => {
 
   useEffect(() => {
     //console.log('searchQuery: ', searchQuery.trim());
-    let tempSearchResult = door.filter(ele =>
-      ele.doorNo.includes(searchQuery.trim()),
-    );
+    let checkStatusArr = ['ISSUE', 'PROGRESS', 'COMPLETED'];
+    let tempSearchResult = [];
+    if (checkStatusArr.includes(searchQuery.trim())) {
+      tempSearchResult = door.filter(ele =>
+        ele.status.includes(searchQuery.trim()),
+      );
+      setValue(searchQuery);
+    } else {
+      tempSearchResult = door.filter(ele =>
+        ele.doorNo.includes(searchQuery.trim()),
+      );
+    }
     setFilteredData([...tempSearchResult]);
   }, [searchQuery]);
 
-  const routeToScreen = (state, screen, setState) => {
+  const routeToScreen = (
+    state,
+    screen,
+    setState,
+    eformResultGuid,
+    setEformResultGuid,
+  ) => {
     setState(state);
     navigation.push(screen);
+    setEformResultGuid(eformResultGuid);
   };
 
   return (
@@ -36,17 +58,20 @@ const DoorScreen = ({navigation}) => {
       <View style={style.container}>
         <SegmentedButtons
           value={value}
-          onValueChange={setValue}
+          onValueChange={setSearchQuery}
           buttons={[
             {
-              value: 'ISSUES',
-              label: 'Issues',
+              value: 'ISSUE',
+              label: 'Issue',
             },
             {
-              value: 'IN_PROGRESS',
+              value: 'PROGRESS',
               label: 'In Progress',
             },
-            {value: 'COMPLETED', label: 'Completed'},
+            {
+              value: 'COMPLETED',
+              label: 'Completed',
+            },
           ]}
         />
         <Searchbar
@@ -69,7 +94,13 @@ const DoorScreen = ({navigation}) => {
               icon={'checkbox-blank-circle'}
               style={style.item}
               onPress={() => {
-                //routeToScreen(v.doorNo, 'CheckList', setAAHKDoor);
+                routeToScreen(
+                  v.doorNo,
+                  'CheckList',
+                  setAAHKDoor,
+                  v.eformResultGuid,
+                  setEformResultGuid,
+                );
               }}
               rightIcon={prop => (
                 <List.Icon {...prop} icon={'arrow-right-thin'} />
