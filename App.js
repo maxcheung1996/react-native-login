@@ -8,7 +8,6 @@ const App = () => {
   return (
     <>
       <StatusBar backgroundColor="#06bcee" />
-      {/* <Navigation /> */}
       <NavigationContainer>
         <NetworkBar />
         <DrawerNavigator />

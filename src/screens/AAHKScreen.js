@@ -1,16 +1,17 @@
 import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import {ActivityIndicator, MD2Colors, List, Button} from 'react-native-paper';
+import {ActivityIndicator, MD2Colors, List, Button, Text, Badge} from 'react-native-paper';
 import {GlobalContext} from '../context/GlobalContext';
 import CustomList from '../components/CustomList';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const AAHKScreen = ({navigation}) => {
   const {isLoading} = useContext(AuthContext);
-  const {setAAHKTray} = useContext(GlobalContext);
-
-  const routeToScreen = (state, screen, setState) => {
+  const {setAAHKTray, setAAhkTrayName} = useContext(GlobalContext);
+  const routeToScreen = (state, screen, setState, aahkTrayName, setAAhkTrayName) => {
     setState(state);
+    setAAhkTrayName(aahkTrayName);
     navigation.push(screen);
   };
 
@@ -54,9 +55,8 @@ const AAHKScreen = ({navigation}) => {
 
   return (
     <>
-      <View style={style.container}>
+      <ScrollView contentContainerStyle={style.scrollViewContainer}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
-
         {trayList.map((v, i) => {
           return (
             <CustomList
@@ -66,7 +66,7 @@ const AAHKScreen = ({navigation}) => {
               icon={v.icon}
               style={style.item}
               onPress={() => {
-                routeToScreen(v.category, 'Building', setAAHKTray);
+                routeToScreen(v.category, 'Building', setAAHKTray, v.title, setAAhkTrayName);
               }}
               rightIcon={(prop) => (
                 <List.Icon {...prop} icon={"arrow-right-thin"} />
@@ -74,21 +74,22 @@ const AAHKScreen = ({navigation}) => {
             />
           );
         })}
-      </View>
+      </ScrollView>
     </>
   );
 };
 
 const style = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollViewContainer: {
     padding: 10,
+    alignItems: 'center',
   },
   item: {
+    width: '100%',
     backgroundColor: 'white',
     borderRadius: 8,
     marginVertical: 10,
-    elevation: 10,
+    elevation: 8,
     shadowColor: '#52006A',
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,

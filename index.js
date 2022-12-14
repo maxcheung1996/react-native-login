@@ -16,13 +16,13 @@ import {GlobalContextProvider} from './src/context/GlobalContext';
 
 export default function Main() {
   return (
-    <AuthContextProvider>
-      <GlobalContextProvider>
+    <GlobalContextProvider>
+      <AuthContextProvider>
         <PaperProvider>
           <App />
         </PaperProvider>
-      </GlobalContextProvider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </GlobalContextProvider>
   );
 }
 

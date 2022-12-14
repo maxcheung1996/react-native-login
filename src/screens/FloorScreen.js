@@ -115,7 +115,7 @@ const FloorScreen = ({navigation}) => {
               title={() => (
                 <>
                   <Text>
-                    {v.woNo} - {v.locationDesc} - {v.completeD_PERCENTAGE}%
+                    {v.locationDesc} - {v.completeD_PERCENTAGE}%
                   </Text>
                   <ProgressBar
                     progress={v.completeD_PERCENTAGE / 100}

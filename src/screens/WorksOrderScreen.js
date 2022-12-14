@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
-import {getWorksOrderFrDB} from '../helper';
+import {convertDateString, getWorksOrderFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
@@ -35,7 +35,7 @@ const WorksOrderScreen = ({navigation}) => {
             <CustomList
               key={i}
               title={v.woNo}
-              description={''}
+              description={convertDateString(v.startDatetime) + " - " + convertDateString(v.endDatetime)}
               icon={'order-bool-descending-variant'}
               style={style.item}
               onPress={() => {
