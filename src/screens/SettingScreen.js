@@ -2,15 +2,14 @@ import React, {useContext} from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {Button, ActivityIndicator, MD2Colors} from 'react-native-paper';
-import { GlobalContext } from '../context/GlobalContext';
+import {GlobalContext} from '../context/GlobalContext';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {useState} from 'react';
 
 const SettingScreen = () => {
   const {userInfo, isLoading, logout} = useContext(AuthContext);
-  const {contractNo, setContractNo} = useContext(GlobalContext);
-  const [open, setOpen] = useState(false);
-  const [contract, setContract] = useState('');
+  const {contractNo, setContractNo, lang, setLang} = useContext(GlobalContext);
+  const [openContract, setOpenContract] = useState(false);
   const [contractList, setContractList] = useState([
     {label: 'T20M102', value: 'T20M102'},
     {label: 'TM12341', value: 'TM12346'},
@@ -18,6 +17,12 @@ const SettingScreen = () => {
     {label: 'KL92353', value: 'KL92358'},
     {label: 'VP94134', value: 'VP94139'},
     {label: 'DF09425', value: 'DF09421'},
+  ]);
+  const [openLang, setOpenLang] = useState(false);
+  const [langList, setLangList] = useState([
+    {label: 'EN', value: 'en'},
+    {label: '繁', value: 'zh'},
+    {label: '簡', value: 'cn'},
   ]);
 
   return (
@@ -28,35 +33,62 @@ const SettingScreen = () => {
         style={style.image}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
         <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
-        <Text>This is Setting Screen.</Text>
-        <DropDownPicker
-          //style={style.dropDownPicker}
-          style={{marginTop: 20}}
-          searchable={true}
-          searchPlaceholder="Search Contract..."
-          itemKey="value"
-          mode="BADGE"
-          theme="LIGHT"
-          open={open}
-          autoScroll={true}
-          items={contractList}
-          setOpen={setOpen}
-          setItems={setContractList}
-          value={contractNo}
-          setValue={setContractNo}
-          multiple={false}
-          placeholder={'Select a Contract'}
-        />
-        <Button
-          disabled={isLoading}
-          style={{marginTop: 20}}
-          icon="logout"
-          mode="elevated"
-          onPress={() => {
-            logout();
-          }}>
-          Logout
-        </Button>
+        <View>
+          <Text style={style.welcome}>Contract:</Text>
+          <DropDownPicker
+            containerStyle={{width: '70%', zIndex: 100}}
+            //style={style.dropDownPicker}
+            searchable={true}
+            searchPlaceholder="Search Contract..."
+            itemKey="value"
+            mode="BADGE"
+            theme="LIGHT"
+            open={openContract}
+            autoScroll={true}
+            items={contractList}
+            setOpen={setOpenContract}
+            setItems={setContractList}
+            value={contractNo}
+            setValue={setContractNo}
+            multiple={false}
+            placeholder={'Select a Contract'}
+          />
+        </View>
+        <View>
+          <Text style={style.welcome}>Language:</Text>
+          <DropDownPicker
+            containerStyle={{width: '70%', zIndex: 99}}
+            //style={style.dropDownPicker}
+            searchable={true}
+            searchPlaceholder="Search Lang..."
+            itemKey="value"
+            mode="BADGE"
+            theme="LIGHT"
+            open={openLang}
+            autoScroll={true}
+            items={langList}
+            setOpen={setOpenLang}
+            setItems={setLangList}
+            value={lang}
+            setValue={setLang}
+            multiple={false}
+            placeholder={'Select a Lang'}
+          />
+        </View>
+        {userInfo.token ? (
+          <Button
+            disabled={isLoading}
+            style={{marginTop: 20}}
+            icon="logout"
+            mode="elevated"
+            onPress={() => {
+              logout();
+            }}>
+            Logout
+          </Button>
+        ) : (
+          ''
+        )}
       </ImageBackground>
     </View>
   );

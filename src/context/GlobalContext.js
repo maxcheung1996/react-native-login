@@ -16,6 +16,7 @@ export const GlobalContextProvider = ({children}) => {
   const [eformResultGuid, setEformResultGuid] = useState('');
   const [aahkTrayName, setAAhkTrayName] = useState('');
   const [contractNo, setContractNo] = useState('T20M102');
+  const [lang, setLang] = useState('en');
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -28,9 +29,11 @@ export const GlobalContextProvider = ({children}) => {
   return (
     <GlobalContext.Provider
       value={{
-        contractNo, 
+        lang,
+        setLang,
+        contractNo,
         setContractNo,
-        aahkTrayName, 
+        aahkTrayName,
         setAAhkTrayName,
         eformResultGuid,
         setEformResultGuid,

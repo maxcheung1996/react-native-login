@@ -3,14 +3,14 @@ import {GlobalContext} from '../context/GlobalContext';
 import {AuthContext} from '../context/AuthContext';
 import AxiosRequest from '../components/AxiosRequest';
 import {ActivityList} from '../database/schema/ActivityList';
-import {realmCreate, realmDelete} from '../database/service/crud';
-import {getBuildingFrDB, getInspectorListFrDB} from '../helper';
+import {realmCreate, realmDelete, realmRead} from '../database/service/crud';
+import {getBuildingFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
 import {BASE_URL} from '../config';
 import {InspectorList} from '../database/schema/InspectorList';
-import {List} from 'react-native-paper';
+import {Avatar, List} from 'react-native-paper';
 
 const BuildingScreen = ({navigation}) => {
   const {aahkTray, isConnected, setAAHKBuilding, setInspectorList} =
@@ -58,8 +58,25 @@ const BuildingScreen = ({navigation}) => {
         await realmCreate(InspectorList, 'InspectorList', res);
       }
     }
-    let result = await getInspectorListFrDB();
-    setInspectorList(result);
+    let results = await realmRead(InspectorList, 'InspectorList');
+    let return_result = [];
+    for (const result of results) {
+      return_result.push({
+        label: result.fullName,
+        value: result.userGuid,
+        icon: () => (
+          <Avatar.Icon
+            backgroundColor="lightgrey"
+            color="black"
+            style={{marginLeft: 8}}
+            size={23}
+            icon="human-greeting-variant"
+          />
+        ),
+      });
+    }
+
+    setInspectorList(return_result);
   };
 
   return (

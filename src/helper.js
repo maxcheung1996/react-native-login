@@ -9,7 +9,7 @@ import {EformPhotoDetail} from './database/schema/EformPhotoDetail';
 import {ActivityList} from './database/schema/ActivityList';
 import {InspectorList} from './database/schema/InspectorList';
 import {userInfoTable} from './database/schema/User';
-import {realmCreate, realmDelete} from './database/service/crud';
+import {realmCreate, realmDelete, realmRead} from './database/service/crud';
 import {BASE_URL} from './config';
 import AxiosRequest from './components/AxiosRequest';
 
@@ -44,20 +44,14 @@ export const getLocalTimeStamp = () => {
 export const getLastLoginUserInfo = async () => {
   let userInfo = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [userInfoTable],
-      encryptionKey: KEY,
-    });
+    userInfo = await realmRead(
+      userInfoTable,
+      'userInfo',
+      '',
+      'createdAt',
+      true,
+    );
 
-    //get data from schema
-    const userInfoTask = await realm
-      .objects('userInfo')
-      .sorted('createdAt', true);
-    userInfo = [...userInfoTask.toJSON()];
-
-    realm.close();
     //console.log('userInfo: ', userInfo[0]);
     return userInfo;
   } catch (error) {
@@ -65,64 +59,14 @@ export const getLastLoginUserInfo = async () => {
   }
 };
 
-export const getInspectorListFrDB = async () => {
-  let inspectorList = [];
-  let return_inspectorList = [];
-  try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [InspectorList],
-      encryptionKey: KEY,
-    });
-
-    //get data from schema
-    const inspectorListTask = realm.objects('InspectorList');
-
-    inspectorList = [...inspectorListTask.toJSON()];
-
-    for (const inspector of inspectorList) {
-      return_inspectorList.push({
-        label: inspector.fullName,
-        value: inspector.userGuid,
-        icon: () => (
-          <Avatar.Icon
-            backgroundColor="lightgrey"
-            color="black"
-            style={{marginLeft: 8}}
-            size={23}
-            icon="human-greeting-variant"
-          />
-        ),
-      });
-    }
-
-    realm.close();
-    return return_inspectorList;
-  } catch (error) {
-    console.log('getInspectorListFrDB error: ', error);
-    return return_inspectorList;
-  }
-};
-
 export const getBuildingFrDB = async cat => {
   let buildingList = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [ActivityList],
-      encryptionKey: KEY,
-    });
-
-    //get data from schema
-    const buildingListTask = realm
-      .objects('ActivityDetail')
-      .filtered(`category == '${cat}' DISTINCT(locationCode)`);
-
-    buildingList = [...buildingListTask.toJSON()];
-
-    realm.close();
+    buildingList = await realmRead(
+      ActivityList,
+      'ActivityDetail',
+      `category == '${cat}' DISTINCT(locationCode)`,
+    );
     return buildingList;
   } catch (error) {
     console.log('getBuildingFrDB error: ', error);
@@ -133,23 +77,12 @@ export const getBuildingFrDB = async cat => {
 export const getWorksOrderFrDB = async (cat, aahkBuilding, setState) => {
   let worksOrderList = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [ActivityList],
-      encryptionKey: KEY,
-    });
-
-    //get data from schema
-    const worksOrderListTask = realm
-      .objects('ActivityDetail')
-      .filtered(
-        `category == '${cat}' && locationCode == '${aahkBuilding}' DISTINCT(woNo)`,
-      );
-
-    setState([...worksOrderListTask.toJSON()]);
-
-    realm.close();
+    worksOrderList = await realmRead(
+      ActivityList,
+      'ActivityDetail',
+      `category == '${cat}' && locationCode == '${aahkBuilding}' DISTINCT(woNo)`,
+    );
+    setState(worksOrderList);
     return worksOrderList;
   } catch (error) {
     console.log('getWorksOrderFrDB error: ', error);
@@ -166,25 +99,12 @@ export const getFloorFrDB = async (
 ) => {
   let FloorList = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [ActivityList],
-      encryptionKey: KEY,
-    });
-
-    //get data from schema
-    const FloorTask = realm
-      .objects('ActivityDetail')
-      .filtered(
-        `category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`,
-      );
-
-    FloorList = [...FloorTask.toJSON()];
-
-    setState([...FloorTask.toJSON()]);
-    realm.close();
-
+    FloorList = await realmRead(
+      ActivityList,
+      'ActivityDetail',
+      `category == '${cat}' && locationCode == '${aahkBuilding}' && woNo == '${aahkWorksOrder}' DISTINCT(locationDesc)`,
+    );
+    setState(FloorList);
     return FloorList;
   } catch (error) {
     console.log('getFloorFrDB error: ', error);
@@ -323,24 +243,14 @@ export const getDoorFrDB = async (
 ) => {
   let doorList = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [AahkActivityDetail],
-      encryptionKey: KEY,
-    });
+    doorList = await realmRead(
+      AahkActivityDetail,
+      'AahkActivityDetail',
+      `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
+    );
+    setFilteredData(doorList);
+    setState(doorList);
 
-    //get data from schema
-    const doorListTask = realm
-      .objects('AahkActivityDetail')
-      .filtered(
-        `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
-      );
-
-    setFilteredData([...doorListTask.toJSON()]);
-    setState([...doorListTask.toJSON()]);
-
-    realm.close();
     return doorList;
   } catch (error) {
     console.log('getDoorFrDB error: ', error);
@@ -352,23 +262,12 @@ export const getDoorFrDB = async (
 export const getEformResultFrDB = async (activityGuid, floor, setState) => {
   let doorList = [];
   try {
-    //open a schema with encryption
-    const realm = await Realm.open({
-      path: 'aahk',
-      schema: [AahkActivityDetail],
-      encryptionKey: KEY,
-    });
-
-    //get data from schema
-    const doorListTask = realm
-      .objects('AahkActivityDetail')
-      .filtered(
-        `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
-      );
-
-    setState([...doorListTask.toJSON()]);
-
-    realm.close();
+    doorList = await realmRead(
+      AahkActivityDetail,
+      'AahkActivityDetail',
+      `activityGuid == '${activityGuid}' && locationDesc == '${floor}' DISTINCT(doorNo)`,
+    );
+    setState(doorList);
     return doorList;
   } catch (error) {
     console.log('getDoorFrDB error: ', error);

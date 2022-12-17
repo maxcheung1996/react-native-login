@@ -6,6 +6,7 @@ import {FAB, Portal, Text, TextInput} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
 import {EformResultGlobal} from '../database/schema/EformResultGlobal';
 import {KEY} from '../config';
+import {realmRead} from '../database/service/crud';
 
 const CheckListScreen = ({navigation}) => {
   const {aahkDoor} = useContext(GlobalContext);
@@ -32,21 +33,15 @@ const CheckListScreen = ({navigation}) => {
   const getCheckListFrDBByEFormGuid = async eformResultGuid => {
     let checkList = [];
     try {
-      //open a schema with encryption
-      const realm = await Realm.open({
-        path: 'aahk',
-        schema: [EformResultGlobal],
-        encryptionKey: KEY,
-      });
+      checkList = await realmRead(
+        EformResultGlobal,
+        'EformResultGlobal',
+        `eformResultGuid == '${eformResultGuid}'`,
+      );
 
-      //get data from schema
-      const checkListTask = realm
-        .objects('EformResultGlobal')
-        .filtered(`eformResultGuid == '${eformResultGuid}'`);
+      setCheckList(checkList);
 
-      setCheckList([...checkListTask.toJSON()]);
-
-      realm.close();
+      // realm.close();
       return checkList;
     } catch (error) {
       console.log('getDoorFrDB error: ', error);
