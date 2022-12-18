@@ -327,3 +327,9 @@ export const getColorByStatus = status => {
     ? '#16bbff'
     : '';
 };
+
+export const checkFirstTimeLogin = async setFirstTimeLogin => {
+  let user = [];
+  user = await getLastLoginUserInfo();
+  setFirstTimeLogin(user.length > 0 ? true : false);
+};

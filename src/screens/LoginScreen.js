@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   ImageBackground,
+  Image,
 } from 'react-native';
 import {AuthContext} from '../context/AuthContext';
 import {
@@ -15,8 +16,8 @@ import {
   MD2Colors,
 } from 'react-native-paper';
 import biometrics from '../biometrics';
-import { FINGERPRINT_BYPASS } from '../config';
-import { getLastLoginUserInfo } from '../helper';
+import {FINGERPRINT_BYPASS} from '../config';
+import {checkFirstTimeLogin, getLastLoginUserInfo} from '../helper';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -27,21 +28,15 @@ const LoginScreen = ({navigation}) => {
   const [firstTimeLogin, setFirstTimeLogin] = useState(true);
 
   useEffect(() => {
-    checkFirstTimeLogin()
-  }, [])
-
-  const checkFirstTimeLogin = async () => {
-    let user = [];
-    user = await getLastLoginUserInfo()
-    setFirstTimeLogin(user.length > 0 ? true : false)
-  }
+    checkFirstTimeLogin(setFirstTimeLogin);
+  }, []);
 
   const BioLogin = async () => {
     let res = await biometrics();
-    if(res){
-      login(FINGERPRINT_BYPASS, "SOCAM_BIO");
+    if (res) {
+      login(FINGERPRINT_BYPASS, 'SOCAM_BIO');
     }
-  }
+  };
 
   const onDismissLoginBar = () => {
     setLoginVisible(false);
@@ -58,6 +53,9 @@ const LoginScreen = ({navigation}) => {
             animating={isLoading}
             color={MD2Colors.purpleA700}
           />
+          <View style={style.logoDiv}>
+            <Image source={require('../images/logo.png')} />
+          </View>
           <TextInput
             disabled={isLoading}
             mode="outlined"
@@ -86,7 +84,7 @@ const LoginScreen = ({navigation}) => {
               />
             }
           />
-          <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
+          <View style={style.loginDiv}>
             <Button
               disabled={isLoading}
               icon="login"
@@ -96,14 +94,17 @@ const LoginScreen = ({navigation}) => {
               }}>
               Login
             </Button>
-            {firstTimeLogin ? <Button style={{marginLeft: 15, width: 5}} icon="fingerprint" onPress={BioLogin} /> : <></>}
+            {firstTimeLogin ? (
+              <Button
+                style={style.fingerprint}
+                icon="fingerprint"
+                onPress={BioLogin}
+              />
+            ) : (
+              <></>
+            )}
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: 20,
-              justifyContent: 'flex-end',
-            }}>
+          <View style={style.registerDiv}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <Text style={style.link}>Register</Text>
@@ -135,6 +136,25 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logoDiv: {
+    marginBottom: 85,
+    alignItems: 'center',
+  },
+  loginDiv: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  fingerprint: {
+    marginLeft: 15,
+    width: 5,
+  },
+  registerDiv: {
+    flexDirection: 'row',
+    marginTop: 20,
+    justifyContent: 'flex-end',
   },
 });
 
