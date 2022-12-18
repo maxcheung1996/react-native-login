@@ -1,15 +1,21 @@
 import React, {useContext} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import {ActivityIndicator, MD2Colors, List, Button, Text, Badge} from 'react-native-paper';
+import {ActivityIndicator, MD2Colors, List} from 'react-native-paper';
 import {GlobalContext} from '../context/GlobalContext';
 import CustomList from '../components/CustomList';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const AAHKScreen = ({navigation}) => {
   const {isLoading} = useContext(AuthContext);
   const {setAAHKTray, setAAhkTrayName} = useContext(GlobalContext);
-  const routeToScreen = (state, screen, setState, aahkTrayName, setAAhkTrayName) => {
+  const routeToScreen = (
+    state,
+    screen,
+    setState,
+    aahkTrayName,
+    setAAhkTrayName,
+  ) => {
     setState(state);
     setAAhkTrayName(aahkTrayName);
     navigation.push(screen);
@@ -66,10 +72,16 @@ const AAHKScreen = ({navigation}) => {
               icon={v.icon}
               style={style.item}
               onPress={() => {
-                routeToScreen(v.category, 'Building', setAAHKTray, v.title, setAAhkTrayName);
+                routeToScreen(
+                  v.category,
+                  'Building',
+                  setAAHKTray,
+                  v.title,
+                  setAAhkTrayName,
+                );
               }}
-              rightIcon={(prop) => (
-                <List.Icon {...prop} icon={"arrow-right-thin"} />
+              rightIcon={prop => (
+                <List.Icon {...prop} icon={'arrow-right-thin'} />
               )}
             />
           );

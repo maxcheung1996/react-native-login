@@ -17,7 +17,7 @@ import {
 } from 'react-native-paper';
 import biometrics from '../biometrics';
 import {FINGERPRINT_BYPASS} from '../config';
-import {checkFirstTimeLogin, getLastLoginUserInfo} from '../helper';
+import {checkFirstTimeLogin} from '../helper';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
