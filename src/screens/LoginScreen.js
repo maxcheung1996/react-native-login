@@ -54,7 +54,7 @@ const LoginScreen = ({navigation}) => {
             color={MD2Colors.purpleA700}
           />
           <View style={style.logoDiv}>
-            <Image source={require('../images/logo.png')} />
+            <Image style={style.logo} source={require('../images/logo.png')} />
           </View>
           <TextInput
             disabled={isLoading}
@@ -126,6 +126,9 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
+  logo: {
+    height: 120, width: 310
+  },
   wrapper: {
     width: '80%',
   },
@@ -138,7 +141,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   logoDiv: {
-    marginBottom: 85,
+    marginBottom: 60,
     alignItems: 'center',
   },
   loginDiv: {
