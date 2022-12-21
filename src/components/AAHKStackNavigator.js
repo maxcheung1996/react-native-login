@@ -1,6 +1,14 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {IconButton, Text } from 'react-native-paper';
-import { GlobalContext } from '../context/GlobalContext';
+import {
+  Button,
+  Divider,
+  IconButton,
+  Menu,
+  Provider,
+  Text,
+  List,
+} from 'react-native-paper';
+import {GlobalContext} from '../context/GlobalContext';
 import AAHKScreen from '../screens/AAHKScreen';
 import BuildingScreen from '../screens/BuildingScreen';
 import CheckListScreen from '../screens/CheckListScreen';
@@ -8,63 +16,411 @@ import DoorScreen from '../screens/DoorScreen';
 import FloorScreen from '../screens/FloorScreen';
 import WorksOrderScreen from '../screens/WorksOrderScreen';
 import {useContext} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {CustomHeader} from './CustomHeader';
+import * as React from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {AuthContext} from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
-const AAHKStackNavigator = ({ navigation }) => {
-  const {aahkBuilding, aahkTrayName, aahkWorksOrder, floor, contractNo} = useContext(GlobalContext);
+const AAHKStackNavigator = ({navigation}) => {
+  const {aahkBuilding, aahkTrayName, aahkWorksOrder, floor, contractNo} =
+    useContext(GlobalContext);
+
+  const {logout} = useContext(AuthContext);
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
-      <Stack.Screen name="AAHK" component={AAHKScreen} options={{
-          headerStyle: {backgroundColor: "#06bcee"},
-          headerTitle: (props) => <Text variant="titleLarge" style={{color: "white"}} {...props}>{contractNo}</Text>,
-          }}/>
-      <Stack.Screen name="Building" component={BuildingScreen} options={{
-          headerTintColor: 'white',
-          headerStyle: {backgroundColor: "#06bcee"},
-          headerTitle: (props) => <Text variant="titleLarge" style={{color: "white"}} {...props}>{aahkTrayName}</Text>,
-        }}/>
-      <Stack.Screen name="WorksOrder" component={WorksOrderScreen} options={{
-          headerTintColor: 'white',
-          headerStyle: {backgroundColor: "#06bcee"},
-          headerTitle: (props) => <Text variant="titleLarge" style={{color: "white"}} {...props}>{aahkBuilding}</Text>,
-          headerRight: () => (
-            <IconButton
-              icon="home-circle-outline"
-              iconColor={"white"}
-              size={20}
-              onPress={() => navigation.navigate('AAHK')}
+      <Stack.Screen
+        name="AAHK"
+        component={AAHKScreen}
+        options={{
+          header: () => (
+            <CustomHeader
+              itemTwo={<Text onPress={() => alert('2')}>AAHK</Text>}
+              itemThree={
+                <CustomMenu
+                  visible={visible}
+                  openMenu={openMenu}
+                  closeMenu={closeMenu}
+                  items={
+                    <>
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="exit-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          logout();
+                        }}
+                        title="Sign Out"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-settings-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          navigation.navigate('Setting');
+                        }}
+                        title="Setting"
+                      />
+                    </>
+                  }
+                />
+              }
             />
           ),
-        }}/>
-      <Stack.Screen name="Floor" component={FloorScreen} options={{
-          headerTintColor: 'white',
-          headerStyle: {backgroundColor: "#06bcee"},
-          headerTitle: (props) => <Text variant="titleLarge" style={{color: "white"}} {...props}>{aahkWorksOrder}</Text>,
-          headerRight: () => (
-            <IconButton
-              icon="home-circle-outline"
-              iconColor={"white"}
-              size={20}
-              onPress={() => navigation.navigate('AAHK')}
+        }}
+      />
+      <Stack.Screen
+        name="Building"
+        component={BuildingScreen}
+        options={{
+          header: () => (
+            <CustomHeader
+              itemOne={
+                <IconButton
+                  icon={'arrow-left-thin'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.goBack()}
+                />
+              }
+              itemTwo={
+                <IconButton
+                  icon={'home-circle-outline'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.navigate('AAHK')}
+                />
+              }
+              itemThree={
+                <CustomMenu
+                  visible={visible}
+                  openMenu={openMenu}
+                  closeMenu={closeMenu}
+                  items={
+                    <>
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="exit-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          logout();
+                        }}
+                        title="Sign Out"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-settings-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          navigation.navigate('Setting');
+                        }}
+                        title="Setting"
+                      />
+                    </>
+                  }
+                />
+              }
             />
           ),
-        }}/>
-      <Stack.Screen name="Door" component={DoorScreen}  options={{
-          headerTintColor: 'white',
-          headerStyle: {backgroundColor: "#06bcee"},
-          headerTitle: (props) => <Text variant="titleLarge" style={{color: "white"}} {...props}>{aahkWorksOrder + " - " + floor}</Text>,
-          headerRight: () => (
-            <IconButton
-              icon="home-circle-outline"
-              iconColor={"white"}
-              size={20}
-              onPress={() => navigation.navigate('AAHK')}
+        }}
+      />
+      <Stack.Screen
+        name="WorksOrder"
+        component={WorksOrderScreen}
+        options={{
+          header: () => (
+            <CustomHeader
+              itemOne={
+                <IconButton
+                  icon={'arrow-left-thin'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.goBack()}
+                />
+              }
+              itemTwo={
+                <IconButton
+                  icon={'home-circle-outline'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.navigate('AAHK')}
+                />
+              }
+              itemThree={
+                <CustomMenu
+                  visible={visible}
+                  openMenu={openMenu}
+                  closeMenu={closeMenu}
+                  items={
+                    <>
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="exit-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          logout();
+                        }}
+                        title="Sign Out"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-settings-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          navigation.navigate('Setting');
+                        }}
+                        title="Setting"
+                      />
+                    </>
+                  }
+                />
+              }
             />
           ),
-        }}/>
+        }}
+      />
+      <Stack.Screen
+        name="Floor"
+        component={FloorScreen}
+        options={{
+          header: () => (
+            <CustomHeader
+              itemOne={
+                <IconButton
+                  icon={'arrow-left-thin'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.goBack()}
+                />
+              }
+              itemTwo={
+                <IconButton
+                  icon={'home-circle-outline'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.navigate('AAHK')}
+                />
+              }
+              itemThree={
+                <CustomMenu
+                  visible={visible}
+                  openMenu={openMenu}
+                  closeMenu={closeMenu}
+                  items={
+                    <>
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="exit-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          logout();
+                        }}
+                        title="Sign Out"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-settings-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          navigation.navigate('Setting');
+                        }}
+                        title="Setting"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="cloud-download-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                        }}
+                        title="Reload"
+                      />
+                    </>
+                  }
+                />
+              }
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Door"
+        component={DoorScreen}
+        options={{
+          header: () => (
+            <CustomHeader
+              itemOne={
+                <IconButton
+                  icon={'arrow-left-thin'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.goBack()}
+                />
+              }
+              itemTwo={
+                <IconButton
+                  icon={'home-circle-outline'}
+                  iconColor={'black'}
+                  size={20}
+                  onPress={() => navigation.navigate('AAHK')}
+                />
+              }
+              itemThree={
+                <CustomMenu
+                  visible={visible}
+                  openMenu={openMenu}
+                  closeMenu={closeMenu}
+                  items={
+                    <>
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="exit-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          logout();
+                        }}
+                        title="Sign Out"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-settings-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                          navigation.navigate('Setting');
+                        }}
+                        title="Setting"
+                      />
+                      <Divider bold={true} />
+                      <Menu.Item
+                        titleStyle={{fontSize: 14}}
+                        leadingIcon={() => (
+                          <Ionicons
+                            style={{marginTop: 4}}
+                            name="ios-sync-circle-outline"
+                            size={16}
+                          />
+                        )}
+                        onPress={() => {
+                          setVisible(false);
+                        }}
+                        title="Sync"
+                      />
+                    </>
+                  }
+                />
+              }
+            />
+          ),
+        }}
+      />
       <Stack.Screen name="CheckList" component={CheckListScreen} />
     </Stack.Navigator>
+  );
+};
+
+const styles = StyleSheet.create({
+  headerStyle: {
+    backgroundColor: 'white',
+    height: 50,
+    shadowColor: '#000',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 30,
+  },
+});
+
+export const CustomMenu = props => {
+  return (
+    <Provider>
+      <View style={{flex: 1}}>
+        <Menu
+          style={{top: 40, left: -90, width: '220%'}}
+          visible={props.visible}
+          onDismiss={props.closeMenu}
+          anchor={<IconButton icon="dots-vertical" onPress={props.openMenu} />}>
+          {props.items}
+        </Menu>
+      </View>
+    </Provider>
   );
 };
 

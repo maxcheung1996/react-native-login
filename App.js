@@ -7,7 +7,7 @@ import NetworkBar from './src/components/NetworkBar';
 const App = () => {
   return (
     <>
-      <StatusBar backgroundColor="#06bcee" />
+      {/* <StatusBar backgroundColor="#06bcee" /> */}
       <NavigationContainer>
         <NetworkBar />
         <DrawerNavigator />
