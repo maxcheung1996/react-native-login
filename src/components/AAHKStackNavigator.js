@@ -1,14 +1,11 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
-  Button,
   Divider,
   IconButton,
   Menu,
   Provider,
   Text,
-  List,
 } from 'react-native-paper';
-import {GlobalContext} from '../context/GlobalContext';
 import AAHKScreen from '../screens/AAHKScreen';
 import BuildingScreen from '../screens/BuildingScreen';
 import CheckListScreen from '../screens/CheckListScreen';
@@ -16,7 +13,7 @@ import DoorScreen from '../screens/DoorScreen';
 import FloorScreen from '../screens/FloorScreen';
 import WorksOrderScreen from '../screens/WorksOrderScreen';
 import {useContext} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import {CustomHeader} from './CustomHeader';
 import * as React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -25,14 +22,9 @@ import {AuthContext} from '../context/AuthContext';
 const Stack = createNativeStackNavigator();
 
 const AAHKStackNavigator = ({navigation}) => {
-  const {aahkBuilding, aahkTrayName, aahkWorksOrder, floor, contractNo} =
-    useContext(GlobalContext);
-
   const {logout} = useContext(AuthContext);
   const [visible, setVisible] = React.useState(false);
-
   const openMenu = () => setVisible(true);
-
   const closeMenu = () => setVisible(false);
 
   return (
@@ -396,17 +388,6 @@ const AAHKStackNavigator = ({navigation}) => {
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  headerStyle: {
-    backgroundColor: 'white',
-    height: 50,
-    shadowColor: '#000',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    elevation: 30,
-  },
-});
 
 export const CustomMenu = props => {
   return (
