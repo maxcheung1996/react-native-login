@@ -17,11 +17,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {AuthContext} from '../context/AuthContext';
 import {Drawer, Switch, TouchableRipple} from 'react-native-paper';
+import {GlobalContext} from '../context/GlobalContext';
 
 const CustomDrawer = props => {
   const {userInfo, splashLoading, logout} = useContext(AuthContext);
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const onToggleSwitch = () => setDarkMode(!darkMode);
+  const {lang, darkMode, setDarkMode} = useContext(GlobalContext);
 
   return (
     <View style={{flex: 1}}>
@@ -79,7 +81,13 @@ const CustomDrawer = props => {
                   inactiveTintColor={'#333'}
                   labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
                   icon={() => <Ionicons name="home-outline" size={22} />}
-                  label={'CMMS'}
+                  label={
+                    lang == 'en'
+                      ? 'CMMS'
+                      : lang == 'zh'
+                      ? '合約管理維護系統'
+                      : 'CMMS'
+                  }
                   onPress={() => {
                     props.navigation.navigate('CMMS');
                   }}
@@ -93,7 +101,13 @@ const CustomDrawer = props => {
                   icon={() => (
                     <Ionicons name="arrow-down-circle-outline" size={22} />
                   )}
-                  label={'Stress Tests'}
+                  label={
+                    lang == 'en'
+                      ? 'Stress Tests'
+                      : lang == 'zh'
+                      ? '壓力測試'
+                      : 'Stress Tests'
+                  }
                   onPress={() => {
                     props.navigation.navigate('Stress Test');
                   }}
@@ -134,8 +148,14 @@ const CustomDrawer = props => {
                   paddingVertical: 12,
                   paddingHorizontal: 16,
                 }}>
-                <Text>Dark Mode</Text>
-                <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                <Text>
+                  {lang == 'en'
+                    ? 'Dark Mode'
+                    : lang == 'zh'
+                    ? '夜間模式'
+                    : 'Dark Mode'}
+                </Text>
+                <Switch value={darkMode} onValueChange={onToggleSwitch} />
               </View>
             </TouchableRipple>
           </View>
@@ -156,7 +176,11 @@ const CustomDrawer = props => {
                       fontFamily: 'Roboto-Medium',
                       marginLeft: 5,
                     }}>
-                    Setting
+                    {lang == 'en'
+                      ? 'Setting'
+                      : lang == 'zh'
+                      ? '設定'
+                      : 'Setting'}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -173,7 +197,11 @@ const CustomDrawer = props => {
                       fontFamily: 'Roboto-Medium',
                       marginLeft: 5,
                     }}>
-                    Sign Out
+                    {lang == 'en'
+                      ? 'Sign Out'
+                      : lang == 'zh'
+                      ? '登出'
+                      : 'Sign Out'}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -192,7 +220,7 @@ const CustomDrawer = props => {
                     fontFamily: 'Roboto-Medium',
                     marginLeft: 5,
                   }}>
-                  Setting
+                  {lang == 'en' ? 'Setting' : lang == 'zh' ? '設定' : 'Setting'}
                 </Text>
               </View>
             </TouchableOpacity>

@@ -18,6 +18,7 @@ import {CustomHeader} from './CustomHeader';
 import * as React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {AuthContext} from '../context/AuthContext';
+import { GlobalContext } from '../context/GlobalContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const AAHKStackNavigator = ({navigation}) => {
   const [visible, setVisible] = React.useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const {lang} = useContext(GlobalContext);
 
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
@@ -56,7 +58,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           logout();
                         }}
-                        title="Sign Out"
+                        title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -72,7 +74,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           navigation.navigate('Setting');
                         }}
-                        title="Setting"
+                        title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
                       />
                     </>
                   }
@@ -124,7 +126,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           logout();
                         }}
-                        title="Sign Out"
+                        title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -140,7 +142,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           navigation.navigate('Setting');
                         }}
-                        title="Setting"
+                        title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
                       />
                     </>
                   }
@@ -192,7 +194,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           logout();
                         }}
-                        title="Sign Out"
+                        title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -208,7 +210,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           navigation.navigate('Setting');
                         }}
-                        title="Setting"
+                        title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
                       />
                     </>
                   }
@@ -260,7 +262,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           logout();
                         }}
-                        title="Sign Out"
+                        title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -276,7 +278,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           navigation.navigate('Setting');
                         }}
-                        title="Setting"
+                        title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -291,7 +293,7 @@ const AAHKStackNavigator = ({navigation}) => {
                         onPress={() => {
                           setVisible(false);
                         }}
-                        title="Reload"
+                        title={lang == 'en' ? "Reload" : lang == 'zh' ? "重新加載" : "Reload"}
                       />
                     </>
                   }
@@ -343,7 +345,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           logout();
                         }}
-                        title="Sign Out"
+                        title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -359,7 +361,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           setVisible(false);
                           navigation.navigate('Setting');
                         }}
-                        title="Setting"
+                        title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
                       />
                       <Divider bold={true} />
                       <Menu.Item
@@ -374,7 +376,7 @@ const AAHKStackNavigator = ({navigation}) => {
                         onPress={() => {
                           setVisible(false);
                         }}
-                        title="Sync"
+                        title={lang == 'en' ? "Sync" : lang == 'zh' ? "同步" : "Sync"}
                       />
                     </>
                   }

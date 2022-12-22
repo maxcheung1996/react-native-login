@@ -21,8 +21,7 @@ const SettingScreen = () => {
   const [openLang, setOpenLang] = useState(false);
   const [langList, setLangList] = useState([
     {label: 'EN', value: 'en'},
-    {label: '繁', value: 'zh'},
-    {label: '簡', value: 'cn'},
+    {label: '繁', value: 'zh'}
   ]);
 
   return (
@@ -32,9 +31,9 @@ const SettingScreen = () => {
         resizeMode="cover"
         style={style.image}>
         <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
-        <Text style={style.welcome}>Welcome {userInfo.fullname}</Text>
+        <Text style={style.welcome}>{lang == 'en' ? "Welcome " : lang == 'zh' ? "歡迎" : "Welcome "}{userInfo.fullname}</Text>
         <View>
-          <Text style={style.welcome}>Contract:</Text>
+          <Text style={style.welcome}>{lang == 'en' ? "Contract:" : lang == 'zh' ? "合約: " : "Contract:"}</Text>
           <DropDownPicker
             containerStyle={{width: '70%', zIndex: 100}}
             //style={style.dropDownPicker}
@@ -55,7 +54,7 @@ const SettingScreen = () => {
           />
         </View>
         <View>
-          <Text style={style.welcome}>Language:</Text>
+          <Text style={style.welcome}>{lang == 'en' ? "Language:" : lang == 'zh' ? "語言: " : "Language:"}</Text>
           <DropDownPicker
             containerStyle={{width: '70%', zIndex: 99}}
             //style={style.dropDownPicker}
@@ -84,7 +83,7 @@ const SettingScreen = () => {
             onPress={() => {
               logout();
             }}>
-            Logout
+            {lang == 'en' ? "Logout:" : lang == 'zh' ? "登出" : "Logout:"}
           </Button>
         ) : (
           ''

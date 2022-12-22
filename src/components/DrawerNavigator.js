@@ -9,6 +9,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import {useContext} from 'react';
 import CustomDrawer from './CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { GlobalContext } from '../context/GlobalContext';
 
 const Drawer = createDrawerNavigator();
 

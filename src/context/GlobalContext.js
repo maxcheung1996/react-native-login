@@ -17,6 +17,7 @@ export const GlobalContextProvider = ({children}) => {
   const [aahkTrayName, setAAhkTrayName] = useState('');
   const [contractNo, setContractNo] = useState('T20M102');
   const [lang, setLang] = useState('en');
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -29,6 +30,8 @@ export const GlobalContextProvider = ({children}) => {
   return (
     <GlobalContext.Provider
       value={{
+        darkMode, 
+        setDarkMode,
         lang,
         setLang,
         contractNo,
