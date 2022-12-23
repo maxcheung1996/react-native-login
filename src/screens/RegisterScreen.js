@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   MD2Colors,
 } from 'react-native-paper';
+import { GlobalContext } from '../context/GlobalContext';
 
 const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -22,6 +23,7 @@ const RegisterScreen = ({navigation}) => {
   const {isLoading, register} = useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [visible, setVisible] = useState(false);
+  const {lang} = useContext(GlobalContext);
 
   const validPassword = (email, password) => {
     if (password === cpassword) {
@@ -50,18 +52,42 @@ const RegisterScreen = ({navigation}) => {
           <TextInput
             disabled={isLoading}
             mode="outlined"
-            label="Email"
+            label={
+              lang == 'en'
+                ? "Email"
+                : lang == 'zh'
+                ? '電子郵件'
+                : "Email"
+            }
             value={email}
-            placeholder="Enter email"
+            placeholder={
+              lang == 'en'
+                ? "Email"
+                : lang == 'zh'
+                ? '電子郵件'
+                : "Email"
+            }
             onChangeText={val => setEmail(val)}
             right={<TextInput.Icon icon="email" />}
           />
           <TextInput
             disabled={isLoading}
             mode="outlined"
-            label="Password"
+            label={
+              lang == 'en'
+                ? "Password"
+                : lang == 'zh'
+                ? '密碼'
+                : "Password"
+            }
             value={password}
-            placeholder="Enter password"
+            placeholder={
+              lang == 'en'
+                ? "Password"
+                : lang == 'zh'
+                ? '密碼'
+                : "Password"
+            }
             secureTextEntry={isPasswordSecure}
             onChangeText={val => setPassword(val)}
             right={
@@ -78,9 +104,21 @@ const RegisterScreen = ({navigation}) => {
           <TextInput
             disabled={isLoading}
             mode="outlined"
-            label="Confirm Password"
+            label={
+              lang == 'en'
+                ? "Confirm Password"
+                : lang == 'zh'
+                ? '確認密碼'
+                : "Confirm Password"
+            }
             value={cpassword}
-            placeholder="Confirm password"
+            placeholder={
+              lang == 'en'
+                ? "Confirm Password"
+                : lang == 'zh'
+                ? '確認密碼'
+                : "Confirm Password"
+            }
             secureTextEntry={isPasswordSecure}
             onChangeText={val => setCPassword(val)}
             right={
@@ -102,7 +140,11 @@ const RegisterScreen = ({navigation}) => {
               onPress={() => {
                 validPassword(email, password);
               }}>
-              Register
+              {lang == 'en'
+                  ? 'Register'
+                  : lang == 'zh'
+                  ? '注冊'
+                  : 'Register'}
             </Button>
           </View>
           <View
@@ -111,9 +153,21 @@ const RegisterScreen = ({navigation}) => {
               marginTop: 20,
               justifyContent: 'flex-end',
             }}>
-            <Text>Already have an account? </Text>
+            <Text>{
+              lang == 'en'
+                ? "Already have an account? "
+                : lang == 'zh'
+                ? '已有帳戶？'
+                : "Already have an account? "
+            }</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                            <Text style={style.link}>Login</Text>
+                            <Text style={style.link}>{
+              lang == 'en'
+                ? "Login"
+                : lang == 'zh'
+                ? '登入'
+                : "Login"
+            }</Text>
                         </TouchableOpacity>
           </View>
         </View>

@@ -37,7 +37,7 @@ const AAHKStackNavigator = ({navigation}) => {
         options={{
           header: () => (
             <CustomHeader
-              itemTwo={<Text onPress={() => alert('2')}>AAHK</Text>}
+              itemTwo={<Text onPress={() => alert('2')}>{lang == 'zh' ? '機場管理' : 'AAHK'}</Text>}
               itemThree={
                 <CustomMenu
                   visible={visible}

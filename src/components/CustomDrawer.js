@@ -121,7 +121,11 @@ const CustomDrawer = props => {
                   inactiveTintColor={'#333'}
                   labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
                   icon={() => <Ionicons name="log-in-outline" size={22} />}
-                  label={'Login'}
+                  label={lang == 'en'
+                  ? 'Login'
+                  : lang == 'zh'
+                  ? '登入'
+                  : 'Login'}
                   onPress={() => {
                     props.navigation.navigate('Login');
                   }}
@@ -133,7 +137,11 @@ const CustomDrawer = props => {
                   inactiveTintColor={'#333'}
                   labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
                   icon={() => <Ionicons name="person-add-outline" size={22} />}
-                  label={'Register'}
+                  label={lang == 'en'
+                  ? 'Register'
+                  : lang == 'zh'
+                  ? '注冊'
+                  : 'Register'}
                   onPress={() => {
                     props.navigation.navigate('Register');
                   }}

@@ -18,6 +18,7 @@ import {
 import biometrics from '../biometrics';
 import {FINGERPRINT_BYPASS} from '../config';
 import {checkFirstTimeLogin} from '../helper';
+import { GlobalContext } from '../context/GlobalContext';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -26,6 +27,7 @@ const LoginScreen = ({navigation}) => {
     useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [firstTimeLogin, setFirstTimeLogin] = useState(true);
+  const {lang} = useContext(GlobalContext);
 
   useEffect(() => {
     checkFirstTimeLogin(setFirstTimeLogin);
@@ -59,7 +61,13 @@ const LoginScreen = ({navigation}) => {
           <TextInput
             disabled={isLoading}
             mode="outlined"
-            label="Email"
+            label={
+              lang == 'en'
+                ? "Email"
+                : lang == 'zh'
+                ? '電子郵件'
+                : "Email"
+            }
             value={email}
             placeholder="Enter email"
             onChangeText={val => setEmail(val)}
@@ -68,7 +76,13 @@ const LoginScreen = ({navigation}) => {
           <TextInput
             disabled={isLoading}
             mode="outlined"
-            label="Password"
+            label={
+              lang == 'en'
+                ? "Password"
+                : lang == 'zh'
+                ? '密碼'
+                : "Password"
+            }
             value={password}
             placeholder="Enter password"
             secureTextEntry={isPasswordSecure}
@@ -92,7 +106,13 @@ const LoginScreen = ({navigation}) => {
               onPress={() => {
                 login(email, password);
               }}>
-              Login
+              {
+              lang == 'en'
+                ? "Login"
+                : lang == 'zh'
+                ? '登入'
+                : "Login"
+            }
             </Button>
             {firstTimeLogin ? (
               <Button
@@ -105,9 +125,19 @@ const LoginScreen = ({navigation}) => {
             )}
           </View>
           <View style={style.registerDiv}>
-            <Text>Don't have an account? </Text>
+            <Text>{
+              lang == 'en'
+                ? "Don't have an account? "
+                : lang == 'zh'
+                ? '沒有帳戶？'
+                : "Don't have an account? "
+            }</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={style.link}>Register</Text>
+              <Text style={style.link}>{lang == 'en'
+                  ? 'Register'
+                  : lang == 'zh'
+                  ? '注冊'
+                  : 'Register'}</Text>
             </TouchableOpacity>
           </View>
         </View>

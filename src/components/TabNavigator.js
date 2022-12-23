@@ -6,13 +6,9 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import Icon, { Icons } from '../components/Icons';
 import Colors from './Colors';
+import { GlobalContext } from '../context/GlobalContext';
+import {useContext} from 'react';
 
-const TabArr = [
-  { route: 'AAHKTab', label: 'AAHK', type: Icons.Ionicons, activeIcon: 'airplane', inActiveIcon: 'airplane-outline', component: AAHKStackNavigator },
-  { route: 'RFITab', label: 'RFI', type: Icons.MaterialCommunityIcons, activeIcon: 'form-select', inActiveIcon: 'form-select', component: RFIStackNavigator },
-  { route: 'App1', label: 'App1', type: Icons.MaterialCommunityIcons, activeIcon: 'heart', inActiveIcon: 'heart-outline', component: AAHKStackNavigator },
-  { route: 'App2', label: 'App2', type: Icons.Ionicons, activeIcon: 'ios-search', inActiveIcon: 'ios-search-outline', component: RFIStackNavigator },
-];
 
 const Tab = createBottomTabNavigator();
 
@@ -41,10 +37,10 @@ const TabButton = (props) => {
         ref={viewRef}
         duration={1000}
         style={styles.container}>
-        <Icon type={item.type} name={focused ? item.activeIcon : item.inActiveIcon} color={focused ? Colors.primary : Colors.primaryLite} />
+        <Icon type={item.type} name={focused ? item.activeIcon : item.inActiveIcon} color={focused ? Colors.purple : Colors.primaryLite} />
         <Animatable.Text
           ref={textRef}
-          style={styles.text}>
+          style={{color: focused ? Colors.purple : Colors.primaryLite, fontSize: 10, textAlign: 'center'}}>
           {item.label}
         </Animatable.Text>
       </Animatable.View>
@@ -53,6 +49,15 @@ const TabButton = (props) => {
 }
 
 const BottomTabNavigator = () => {
+  const {lang} = useContext(GlobalContext);
+
+  const TabArr = [
+    { route: 'AAHKTab', label: lang == 'zh' ? '機場管理' : 'AAHK', type: Icons.Ionicons, activeIcon: 'airplane', inActiveIcon: 'airplane-outline', component: AAHKStackNavigator },
+    { route: 'RFITab', label: lang == 'zh' ? '工程檢查' : 'RFI', type: Icons.MaterialCommunityIcons, activeIcon: 'form-select', inActiveIcon: 'form-select', component: RFIStackNavigator },
+    { route: 'App1', label: lang == 'zh' ? '流程管理' : 'BPM', type: Icons.MaterialCommunityIcons, activeIcon: 'clipboard-flow', inActiveIcon: 'clipboard-flow-outline', component: AAHKStackNavigator },
+    { route: 'App2', label: lang == 'zh' ? '網站' : 'Portal', type: Icons.Ionicons, activeIcon: 'ios-search', inActiveIcon: 'ios-search-outline', component: RFIStackNavigator },
+  ];
+  
   return (
     <Tab.Navigator screenOptions={styles.screenOptions}>
       {TabArr.map((item, index) => {
@@ -86,9 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 10,
-    textAlign: 'center',
-    color: Colors.primary,
+    
   }
 })
 
