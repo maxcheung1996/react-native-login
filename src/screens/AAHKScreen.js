@@ -1,7 +1,13 @@
 import React, {useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {AuthContext} from '../context/AuthContext';
-import {ActivityIndicator, MD2Colors, List, Avatar} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  MD2Colors,
+  List,
+  Avatar,
+  Button,
+} from 'react-native-paper';
 import {GlobalContext} from '../context/GlobalContext';
 import CustomList from '../components/CustomList';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -16,10 +22,11 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
-import { ColorSpace } from 'react-native-reanimated';
+import {ColorSpace} from 'react-native-reanimated';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AAHKScreen = ({navigation}) => {
-  const {isLoading} = useContext(AuthContext);
+  // const {isLoading} = useContext(AuthContext);
   const {setAAHKTray, setAAhkTrayName} = useContext(GlobalContext);
   const routeToScreen = (
     state,
@@ -158,9 +165,10 @@ const AAHKScreen = ({navigation}) => {
     //   </ScrollView>
     // </>
     <>
-      <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} />
       <View style={styles.container}>
+        {/* <ActivityIndicator animating={isLoading} color={MD2Colors.purpleA700} /> */}
         <FlatList
+          contentContainerStyle={{paddingBottom: 100}}
           style={styles.notificationList}
           data={trayList}
           keyExtractor={item => {
@@ -183,13 +191,24 @@ const AAHKScreen = ({navigation}) => {
                   />
                   <Text style={styles.name}>{item.name}</Text>
                 </View>
-                <View
-                  style={[styles.cardContent, styles.tagsContent]}>
-                  <View style={{flex: 1, flexDirection: 'row'}}>{renderTags(item)}</View>
+                <View style={[styles.cardContent, styles.tagsContent]}>
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    {renderTags(item)}
+                  </View>
                   <View style={{flex: 1, justifyContent: 'center'}}>
-                    <Text style={{alignSelf: 'flex-end'}}>
-                      arrow
-                    </Text>
+                    {/* <Text style={{alignSelf: 'flex-end'}}>arrow</Text> */}
+                    <Button
+                      style={{alignSelf: 'flex-end'}}
+                      onPress={() => {
+                        cardClickEventListener(item);
+                      }}
+                      icon={() => (
+                        <Ionicons
+                          name="arrow-forward-circle-outline"
+                          size={22}
+                        />
+                      )}
+                    />
                   </View>
                 </View>
               </TouchableOpacity>

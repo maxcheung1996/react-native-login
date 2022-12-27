@@ -123,7 +123,7 @@ const style = StyleSheet.create({
   scrollView: {
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 10,
+    paddingBottom: 100,
     alignItems: 'center',
   },
   item: {
