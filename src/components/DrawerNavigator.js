@@ -10,6 +10,7 @@ import {useContext} from 'react';
 import CustomDrawer from './CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { GlobalContext } from '../context/GlobalContext';
+import TakePhotoScreen from '../screens/TakePhotoScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -81,6 +82,15 @@ const DrawerNavigator = () => {
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="settings-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="TakePhoto"
+        component={TakePhotoScreen}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="camera" size={22} color={color} />
           ),
         }}
       />

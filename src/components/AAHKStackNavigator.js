@@ -19,6 +19,8 @@ import * as React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {AuthContext} from '../context/AuthContext';
 import { GlobalContext } from '../context/GlobalContext';
+import Icon, { Icons } from './Icons';
+import TakePhotoScreen from '../screens/TakePhotoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -386,7 +388,154 @@ const AAHKStackNavigator = ({navigation}) => {
           ),
         }}
       />
-      <Stack.Screen name="CheckList" component={CheckListScreen} />
+      <Stack.Screen name="CheckList" component={CheckListScreen} 
+      options={{
+        header: () => (
+          <CustomHeader
+            itemOne={
+              <IconButton
+                icon={'arrow-left-thin'}
+                iconColor={'black'}
+                size={20}
+                onPress={() => navigation.goBack()}
+              />
+            }
+            itemTwo={
+              <IconButton
+                icon={'home-circle-outline'}
+                iconColor={'black'}
+                size={20}
+                onPress={() => navigation.navigate('AAHK')}
+              />
+            }
+            itemThree={
+              <CustomMenu
+                visible={visible}
+                openMenu={openMenu}
+                closeMenu={closeMenu}
+                items={
+                  <>
+                    <Menu.Item
+                      titleStyle={{fontSize: 14}}
+                      leadingIcon={() => (
+                        <Ionicons
+                          style={{marginTop: 4}}
+                          name="exit-outline"
+                          size={16}
+                        />
+                      )}
+                      onPress={() => {
+                        setVisible(false);
+                        logout();
+                      }}
+                      title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
+                    />
+                    <Divider bold={true} />
+                    <Menu.Item
+                      titleStyle={{fontSize: 14}}
+                      leadingIcon={() => (
+                        <Ionicons
+                          style={{marginTop: 4}}
+                          name="ios-settings-outline"
+                          size={16}
+                        />
+                      )}
+                      onPress={() => {
+                        setVisible(false);
+                        navigation.navigate('Setting');
+                      }}
+                      title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
+                    />
+                    <Divider bold={true} />
+                    <Menu.Item
+                      titleStyle={{fontSize: 14}}
+                      leadingIcon={() => (
+                        // <Ionicons
+                        //   style={{marginTop: 4}}
+                        //   name="ios-sync-circle-outline"
+                        //   size={16}
+                        // />
+                      <Icon style={{marginTop: 4}} type={Icons.SimpleLineIcons} size={16} name={"exclamation"}/>
+                      )}
+                      onPress={() => {
+                        setVisible(false);
+                      }}
+                      title={lang == 'en' ? "Follow" : lang == 'zh' ? "跟進" : "Follow"}
+                    />
+                  </>
+                }
+              />
+            }
+          />
+        ),
+      }}
+      />
+      <Stack.Screen name="TakePhoto" component={TakePhotoScreen}
+      options={{
+        header: () => (
+          <CustomHeader
+            itemOne={
+              <IconButton
+                icon={'arrow-left-thin'}
+                iconColor={'black'}
+                size={20}
+                onPress={() => navigation.goBack()}
+              />
+            }
+            itemTwo={
+              <IconButton
+                icon={'home-circle-outline'}
+                iconColor={'black'}
+                size={20}
+                onPress={() => navigation.navigate('AAHK')}
+              />
+            }
+            itemThree={
+              <CustomMenu
+                visible={visible}
+                openMenu={openMenu}
+                closeMenu={closeMenu}
+                items={
+                  <>
+                    <Menu.Item
+                      titleStyle={{fontSize: 14}}
+                      leadingIcon={() => (
+                        <Ionicons
+                          style={{marginTop: 4}}
+                          name="exit-outline"
+                          size={16}
+                        />
+                      )}
+                      onPress={() => {
+                        setVisible(false);
+                        logout();
+                      }}
+                      title={lang == 'en' ? "Sign Out" : lang == 'zh' ? "登出" : "Sign Out"}
+                    />
+                    <Divider bold={true} />
+                    <Menu.Item
+                      titleStyle={{fontSize: 14}}
+                      leadingIcon={() => (
+                        <Ionicons
+                          style={{marginTop: 4}}
+                          name="ios-settings-outline"
+                          size={16}
+                        />
+                      )}
+                      onPress={() => {
+                        setVisible(false);
+                        navigation.navigate('Setting');
+                      }}
+                      title={lang == 'en' ? "Setting" : lang == 'zh' ? "設定" : "Setting"}
+                    />                   
+                  </>
+                }
+              />
+            }
+          />
+        ),
+      }}
+      />
     </Stack.Navigator>
   );
 };

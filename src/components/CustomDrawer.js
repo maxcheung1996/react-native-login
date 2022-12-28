@@ -146,6 +146,22 @@ const CustomDrawer = props => {
                     props.navigation.navigate('Register');
                   }}
                 />
+
+                  <DrawerItem
+                  activeBackgroundColor={'#aa18ea'}
+                  activeTintColor={'#fff'}
+                  inactiveTintColor={'#333'}
+                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  icon={() => <Ionicons name="log-in-outline" size={22} />}
+                  label={lang == 'en'
+                  ? 'TakePhoto'
+                  : lang == 'zh'
+                  ? '照相'
+                  : 'TakePhoto'}
+                  onPress={() => {
+                    props.navigation.navigate('TakePhoto');
+                  }}
+                />
               </>
             )}
             <TouchableRipple>

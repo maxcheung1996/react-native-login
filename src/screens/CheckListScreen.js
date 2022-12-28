@@ -14,16 +14,15 @@ const CheckListScreen = ({navigation}) => {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm({
-    defaultValues: {
-      firstName: '',
-    },
-  });
+  } = useForm({});
   const onSubmit = data => console.log(data);
   const [open, setFABOpen] = useState(false);
-  const {eformResultGuid} = useContext(GlobalContext);
+  const {eformResultGuid, lang} = useContext(GlobalContext);
   const [checkList, setCheckList] = useState([]);
-
+  const routeToScreen = (screen) => {
+    navigation.push(screen);
+  };
+  
   useEffect(() => {
     getCheckListFrDBByEFormGuid(eformResultGuid);
   }, []);
@@ -83,14 +82,20 @@ const CheckListScreen = ({navigation}) => {
           icon={open ? 'close-circle-outline' : 'plus'}
           actions={[
             {
+              icon: 'camera-plus-outline',
+              label: lang == "en" ? 'Take Photo' : '拍照',
+              style: {backgroundColor: '#5bc0de'},
+              onPress: () => routeToScreen("TakePhoto"),
+            },
+            {
               icon: 'content-save-edit-outline',
-              label: 'Save',
+              label: lang == "en" ? 'Save' : '儲存',
               style: {backgroundColor: '#00FF00'},
               onPress: handleSubmit(onSubmit),
             },
             {
               icon: 'clipboard-check-multiple-outline',
-              label: 'Complete',
+              label: lang == "en" ? 'Complete' : '完成',
               style: {backgroundColor: '#FFD801'},
               onPress: handleSubmit(onSubmit),
             },
@@ -115,7 +120,7 @@ const style = StyleSheet.create({
     padding: 10,
   },
   fabStyle: {
-    bottom: 45,
+    bottom: 75,
     right: 0,
     position: 'absolute',
   },
