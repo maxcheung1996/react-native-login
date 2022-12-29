@@ -27,7 +27,7 @@ const DrawerNavigator = () => {
         drawerInactiveTintColor: '#333',
         drawerLabelStyle: {
           //marginLeft: -25,
-          fontFamily: 'Roboto-Medium',
+          fontFamily: 'System',
           fontSize: 15,
         },
       }}>

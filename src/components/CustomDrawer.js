@@ -49,7 +49,7 @@ const CustomDrawer = props => {
                   style={{
                     color: '#fff',
                     fontSize: 18,
-                    fontFamily: 'Roboto-Medium',
+                    fontFamily: 'System',
                     marginBottom: 5,
                   }}>
                   {userInfo.fullname}
@@ -58,7 +58,7 @@ const CustomDrawer = props => {
                   <Text
                     style={{
                       color: '#fff',
-                      fontFamily: 'Roboto-Regular',
+                      fontFamily: 'System',
                       marginRight: 5,
                     }}>
                     {userInfo.usermail}
@@ -79,7 +79,7 @@ const CustomDrawer = props => {
                   activeBackgroundColor={'#aa18ea'}
                   activeTintColor={'#fff'}
                   inactiveTintColor={'#333'}
-                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="home-outline" size={22} />}
                   label={
                     lang == 'en'
@@ -97,7 +97,7 @@ const CustomDrawer = props => {
                   activeBackgroundColor={'#aa18ea'}
                   activeTintColor={'#fff'}
                   inactiveTintColor={'#333'}
-                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => (
                     <Ionicons name="arrow-down-circle-outline" size={22} />
                   )}
@@ -119,7 +119,7 @@ const CustomDrawer = props => {
                   activeBackgroundColor={'#aa18ea'}
                   activeTintColor={'#fff'}
                   inactiveTintColor={'#333'}
-                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="log-in-outline" size={22} />}
                   label={lang == 'en'
                   ? 'Login'
@@ -135,7 +135,7 @@ const CustomDrawer = props => {
                   activeBackgroundColor={'#aa18ea'}
                   activeTintColor={'#fff'}
                   inactiveTintColor={'#333'}
-                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="person-add-outline" size={22} />}
                   label={lang == 'en'
                   ? 'Register'
@@ -151,7 +151,7 @@ const CustomDrawer = props => {
                   activeBackgroundColor={'#aa18ea'}
                   activeTintColor={'#fff'}
                   inactiveTintColor={'#333'}
-                  labelStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                  labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="log-in-outline" size={22} />}
                   label={lang == 'en'
                   ? 'TakePhoto'
@@ -197,7 +197,7 @@ const CustomDrawer = props => {
                   <Text
                     style={{
                       fontSize: 15,
-                      fontFamily: 'Roboto-Medium',
+                      fontFamily: 'System',
                       marginLeft: 5,
                     }}>
                     {lang == 'en'
@@ -218,7 +218,7 @@ const CustomDrawer = props => {
                   <Text
                     style={{
                       fontSize: 15,
-                      fontFamily: 'Roboto-Medium',
+                      fontFamily: 'System',
                       marginLeft: 5,
                     }}>
                     {lang == 'en'
@@ -241,7 +241,7 @@ const CustomDrawer = props => {
                 <Text
                   style={{
                     fontSize: 15,
-                    fontFamily: 'Roboto-Medium',
+                    fontFamily: 'System',
                     marginLeft: 5,
                   }}>
                   {lang == 'en' ? 'Setting' : lang == 'zh' ? '設定' : 'Setting'}
