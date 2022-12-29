@@ -28,6 +28,8 @@
     "react-native-dropdown-picker": "^5.4.3",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-get-random-values": "^1.8.0",
+    "react-native-image-picker": "^4.10.3",
+    "react-native-image-zoom-viewer-fixed": "^3.2.5",
     "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-paper": "^5.0.0-rc.10",
     "react-native-reanimated": "^2.13.0",

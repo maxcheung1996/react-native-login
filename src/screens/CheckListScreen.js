@@ -5,7 +5,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {FAB, Portal, Text, TextInput} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
 import {EformResultGlobal} from '../database/schema/EformResultGlobal';
-import {KEY} from '../config';
 import {realmRead} from '../database/service/crud';
 
 const CheckListScreen = ({navigation}) => {
@@ -22,7 +21,7 @@ const CheckListScreen = ({navigation}) => {
   const routeToScreen = (screen) => {
     navigation.push(screen);
   };
-  
+
   useEffect(() => {
     getCheckListFrDBByEFormGuid(eformResultGuid);
   }, []);
@@ -74,7 +73,6 @@ const CheckListScreen = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <Portal>
         <FAB.Group
           style={style.fabStyle}
           open={open}
@@ -109,7 +107,6 @@ const CheckListScreen = ({navigation}) => {
             }
           }}
         />
-      </Portal>
     </View>
   );
 };
