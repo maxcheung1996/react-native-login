@@ -1,9 +1,11 @@
 import {View, StyleSheet} from 'react-native';
+import NetworkBar from './NetworkBar';
 
 export const CustomHeader = (props) => {
   return (
     <>
       <View style={styles.headerStyle}>
+        <NetworkBar/>
         <View style={{flex: 1, flexDirection: 'row'}}>
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -14,7 +16,7 @@ export const CustomHeader = (props) => {
             {props.itemTwo}
           </View>
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: -6}}>
             {props.itemThree}
           </View>
         </View>
@@ -26,7 +28,7 @@ export const CustomHeader = (props) => {
 const styles = StyleSheet.create({
   headerStyle: {
     backgroundColor: 'white',
-    height: 50,
+    height: 63,
     shadowColor: '#000',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,

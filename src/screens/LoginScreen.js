@@ -18,7 +18,9 @@ import {
 import biometrics from '../biometrics';
 import {FINGERPRINT_BYPASS} from '../config';
 import {checkFirstTimeLogin} from '../helper';
-import { GlobalContext } from '../context/GlobalContext';
+import {GlobalContext} from '../context/GlobalContext';
+import NetworkBar from '../components/NetworkBar';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
@@ -45,110 +47,104 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <View style={style.container}>
-      <ImageBackground
-        source={require('../images/app_bg.jpg')}
-        resizeMode="cover"
-        style={style.image}>
-        <View style={style.wrapper}>
-          <ActivityIndicator
-            animating={isLoading}
-            color={MD2Colors.purpleA700}
-          />
-          <View style={style.logoDiv}>
-            <Image style={style.logo} source={require('../images/logo.png')} />
-          </View>
-          <TextInput
-            disabled={isLoading}
-            mode="outlined"
-            label={
-              lang == 'en'
-                ? "Email"
-                : lang == 'zh'
-                ? '電子郵件'
-                : "Email"
-            }
-            value={email}
-            placeholder="Enter email"
-            onChangeText={val => setEmail(val)}
-            right={<TextInput.Icon icon="email" />}
-          />
-          <TextInput
-            disabled={isLoading}
-            mode="outlined"
-            label={
-              lang == 'en'
-                ? "Password"
-                : lang == 'zh'
-                ? '密碼'
-                : "Password"
-            }
-            value={password}
-            placeholder="Enter password"
-            secureTextEntry={isPasswordSecure}
-            onChangeText={val => setPassword(val)}
-            right={
-              <TextInput.Icon
-                icon="eye"
-                onPress={() => {
-                  isPasswordSecure
-                    ? setIsPasswordSecure(false)
-                    : setIsPasswordSecure(true);
-                }}
+    <SafeAreaView style={{flex: 1}}>
+      <View style={style.container}>
+        <NetworkBar />
+        <ImageBackground
+          source={require('../images/app_bg.jpg')}
+          resizeMode="cover"
+          style={style.image}>
+          <View style={style.wrapper}>
+            <ActivityIndicator
+              animating={isLoading}
+              color={MD2Colors.purpleA700}
+            />
+            <View style={style.logoDiv}>
+              <Image
+                style={style.logo}
+                source={require('../images/logo.png')}
               />
-            }
-          />
-          <View style={style.loginDiv}>
-            <Button
+            </View>
+            <TextInput
               disabled={isLoading}
-              icon="login"
-              mode="elevated"
-              onPress={() => {
-                login(email, password);
-              }}>
-              {
-              lang == 'en'
-                ? "Login"
-                : lang == 'zh'
-                ? '登入'
-                : "Login"
-            }
-            </Button>
-            {firstTimeLogin ? (
+              mode="outlined"
+              label={
+                lang == 'en' ? 'Email' : lang == 'zh' ? '電子郵件' : 'Email'
+              }
+              value={email}
+              placeholder="Enter email"
+              onChangeText={val => setEmail(val)}
+              right={<TextInput.Icon icon="email" />}
+            />
+            <TextInput
+              disabled={isLoading}
+              mode="outlined"
+              label={
+                lang == 'en' ? 'Password' : lang == 'zh' ? '密碼' : 'Password'
+              }
+              value={password}
+              placeholder="Enter password"
+              secureTextEntry={isPasswordSecure}
+              onChangeText={val => setPassword(val)}
+              right={
+                <TextInput.Icon
+                  icon="eye"
+                  onPress={() => {
+                    isPasswordSecure
+                      ? setIsPasswordSecure(false)
+                      : setIsPasswordSecure(true);
+                  }}
+                />
+              }
+            />
+            <View style={style.loginDiv}>
               <Button
-                style={style.fingerprint}
-                icon="fingerprint"
-                onPress={BioLogin}
-              />
-            ) : (
-              <></>
-            )}
-          </View>
-          <View style={style.registerDiv}>
-            <Text>{
-              lang == 'en'
-                ? "Don't have an account? "
-                : lang == 'zh'
-                ? '沒有帳戶？'
-                : "Don't have an account? "
-            }</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={style.link}>{lang == 'en'
-                  ? 'Register'
+                disabled={isLoading}
+                icon="login"
+                mode="elevated"
+                onPress={() => {
+                  login(email, password);
+                }}>
+                {lang == 'en' ? 'Login' : lang == 'zh' ? '登入' : 'Login'}
+              </Button>
+              {firstTimeLogin ? (
+                <Button
+                  style={style.fingerprint}
+                  icon="fingerprint"
+                  onPress={BioLogin}
+                />
+              ) : (
+                <></>
+              )}
+            </View>
+            <View style={style.registerDiv}>
+              <Text>
+                {lang == 'en'
+                  ? "Don't have an account? "
                   : lang == 'zh'
-                  ? '注冊'
-                  : 'Register'}</Text>
-            </TouchableOpacity>
+                  ? '沒有帳戶？'
+                  : "Don't have an account? "}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={style.link}>
+                  {lang == 'en'
+                    ? 'Register'
+                    : lang == 'zh'
+                    ? '注冊'
+                    : 'Register'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <Snackbar
-          visible={loginVisible}
-          onDismiss={onDismissLoginBar}
-          duration={2500}>
-          {loginMsg}
-        </Snackbar>
-      </ImageBackground>
-    </View>
+          <Snackbar
+            visible={loginVisible}
+            onDismiss={onDismissLoginBar}
+            duration={2500}>
+            {loginMsg}
+          </Snackbar>
+        </ImageBackground>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -157,7 +153,8 @@ const style = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    height: 120, width: 310
+    height: 120,
+    width: 310,
   },
   wrapper: {
     width: '80%',
