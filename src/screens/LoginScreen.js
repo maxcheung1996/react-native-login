@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   ImageBackground,
   Image,
 } from 'react-native';
-import {AuthContext} from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import {
   TextInput,
   Button,
@@ -16,20 +16,20 @@ import {
   MD2Colors,
 } from 'react-native-paper';
 import biometrics from '../biometrics';
-import {FINGERPRINT_BYPASS} from '../config';
-import {checkFirstTimeLogin} from '../helper';
-import {GlobalContext} from '../context/GlobalContext';
+import { FINGERPRINT_BYPASS } from '../config';
+import { checkFirstTimeLogin } from '../helper';
+import { GlobalContext } from '../context/GlobalContext';
 import NetworkBar from '../components/NetworkBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const {isLoading, login, loginVisible, loginMsg, setLoginVisible} =
+  const { isLoading, login, loginVisible, loginMsg, setLoginVisible } =
     useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [firstTimeLogin, setFirstTimeLogin] = useState(true);
-  const {lang} = useContext(GlobalContext);
+  const { lang } = useContext(GlobalContext);
 
   useEffect(() => {
     checkFirstTimeLogin(setFirstTimeLogin);
@@ -47,7 +47,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={style.container}>
         <NetworkBar />
         <ImageBackground
@@ -64,6 +64,9 @@ const LoginScreen = ({navigation}) => {
                 style={style.logo}
                 source={require('../images/logo.png')}
               />
+            </View>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={style.appName}>CMMS - Routine MainTenance</Text>
             </View>
             <TextInput
               disabled={isLoading}
@@ -122,16 +125,16 @@ const LoginScreen = ({navigation}) => {
                 {lang == 'en'
                   ? "Don't have an account? "
                   : lang == 'zh'
-                  ? '沒有帳戶？'
-                  : "Don't have an account? "}
+                    ? '沒有帳戶？'
+                    : "Don't have an account? "}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={style.link}>
                   {lang == 'en'
                     ? 'Register'
                     : lang == 'zh'
-                    ? '注冊'
-                    : 'Register'}
+                      ? '注冊'
+                      : 'Register'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -153,11 +156,12 @@ const style = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    height: 120,
-    width: 310,
+    height: 80,
+    width: 220,
   },
   wrapper: {
     width: '80%',
+    marginBottom: 130
   },
   link: {
     color: 'blue',
@@ -168,7 +172,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   logoDiv: {
-    marginBottom: 60,
+    marginBottom: 30,
     alignItems: 'center',
   },
   loginDiv: {
@@ -186,6 +190,12 @@ const style = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'flex-end',
   },
+  appName: {
+    fontSize: 20, 
+    color: 'red', 
+    marginBottom: 30, 
+    fontWeight: 'bold'
+  }
 });
 
 export default LoginScreen;

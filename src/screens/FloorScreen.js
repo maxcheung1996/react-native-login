@@ -177,6 +177,7 @@ const FloorScreen = ({navigation}) => {
 const style = StyleSheet.create({
   dropDownPickerView: {
     padding: 10,
+    zIndex: 1,
     alignItems: 'center',
   },
   scrollView: {
