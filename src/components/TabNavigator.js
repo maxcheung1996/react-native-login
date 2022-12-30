@@ -9,6 +9,7 @@ import Colors from './Colors';
 import {GlobalContext} from '../context/GlobalContext';
 import {useContext} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,13 +25,13 @@ const TabButton = props => {
         0: {scale: 0.8, rotate: '0deg'},
         1: {scale: 1, rotate: '360deg'},
       });
-      textRef.current.transitionTo({scale: 1.2});
+      //textRef.current.transitionTo({scale: 1.2});
     } else {
       viewRef.current.animate({
         0: {scale: 1, rotate: '360deg'},
         1: {scale: 0.8, rotate: '0deg'},
       });
-      textRef.current.transitionTo({scale: 1.2});
+      //textRef.current.transitionTo({scale: 1.2});
     }
   }, [focused]);
 
@@ -39,21 +40,21 @@ const TabButton = props => {
       onPress={onPress}
       activeOpacity={1}
       style={styles.container}>
-      <Animatable.View ref={viewRef} duration={1000} style={styles.container}>
+      <Animatable.View ref={viewRef} duration={1000} style={styles.AnimateContainer}>
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
           color={focused ? Colors.purple : Colors.primaryLite}
         />
-        <Animatable.Text
-          ref={textRef}
-          style={{
+        <Text style={{
             color: focused ? Colors.purple : Colors.primaryLite,
             fontSize: 10,
-            textAlign: 'center',
-          }}>
+          }}>{item.label}</Text>
+        {/* <Animatable.Text
+          ref={textRef}
+          >
           {item.label}
-        </Animatable.Text>
+        </Animatable.Text> */}
       </Animatable.View>
     </TouchableOpacity>
   );
@@ -132,10 +133,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  AnimateContainer: { 
+    paddingTop: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {},
 });
 
 export default BottomTabNavigator;
