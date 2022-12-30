@@ -1,26 +1,33 @@
 import {View, StyleSheet} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import NetworkBar from './NetworkBar';
 
-export const CustomHeader = (props) => {
+export const CustomHeader = props => {
   return (
     <>
-      <View style={styles.headerStyle}>
-        <NetworkBar/>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            {props.itemOne}
-          </View>
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            {props.itemTwo}
-          </View>
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: -6}}>
-            {props.itemThree}
+      <SafeAreaView edges={['top']}>
+        <View style={styles.headerStyle}>
+          <NetworkBar />
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              {props.itemOne}
+            </View>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              {props.itemTwo}
+            </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {props.itemThree}
+            </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };
@@ -28,7 +35,7 @@ export const CustomHeader = (props) => {
 const styles = StyleSheet.create({
   headerStyle: {
     backgroundColor: 'white',
-    height: 63,
+    height: 70,
     shadowColor: '#000',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
