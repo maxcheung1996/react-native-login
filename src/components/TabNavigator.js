@@ -1,20 +1,20 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AAHKStackNavigator from './AAHKStackNavigator';
 import RFIStackNavigator from './RFIStackNavigator';
 import * as Animatable from 'react-native-animatable';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useRef} from 'react';
-import Icon, {Icons} from '../components/Icons';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import Icon, { Icons } from '../components/Icons';
 import Colors from './Colors';
-import {GlobalContext} from '../context/GlobalContext';
-import {useContext} from 'react';
+import { GlobalContext } from '../context/GlobalContext';
+import { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
 const TabButton = props => {
-  const {item, onPress, accessibilityState} = props;
+  const { item, onPress, accessibilityState } = props;
   const focused = accessibilityState.selected;
   const viewRef = useRef(null);
   const textRef = useRef(null);
@@ -22,14 +22,14 @@ const TabButton = props => {
   useEffect(() => {
     if (focused) {
       viewRef.current.animate({
-        0: {scale: 0.8, rotate: '0deg'},
-        1: {scale: 1, rotate: '360deg'},
+        0: { scale: 0.8, scale: 1.2 },
+        1: { scale: 1.2, scale: 1 },
       });
       //textRef.current.transitionTo({scale: 1.2});
     } else {
       viewRef.current.animate({
-        0: {scale: 1, rotate: '360deg'},
-        1: {scale: 0.8, rotate: '0deg'},
+        0: { scale: 1, scale: 1.2 },
+        1: { scale: 1.2, scale: 0.8 },
       });
       //textRef.current.transitionTo({scale: 1.2});
     }
@@ -40,16 +40,16 @@ const TabButton = props => {
       onPress={onPress}
       activeOpacity={1}
       style={styles.container}>
-      <Animatable.View ref={viewRef} duration={1000} style={styles.AnimateContainer}>
+      <Animatable.View ref={viewRef} duration={750} style={styles.AnimateContainer}>
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
           color={focused ? Colors.purple : Colors.primaryLite}
         />
         <Text style={{
-            color: focused ? Colors.purple : Colors.primaryLite,
-            fontSize: 10,
-          }}>{item.label}</Text>
+          color: focused ? Colors.purple : Colors.primaryLite,
+          fontSize: 10,
+        }}>{item.label}</Text>
         {/* <Animatable.Text
           ref={textRef}
           >
@@ -61,7 +61,7 @@ const TabButton = props => {
 };
 
 const BottomTabNavigator = () => {
-  const {lang} = useContext(GlobalContext);
+  const { lang } = useContext(GlobalContext);
 
   const TabArr = [
     {
@@ -99,7 +99,7 @@ const BottomTabNavigator = () => {
   ];
 
   return (
-    <SafeAreaView style={{flex: 1}} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
       <Tab.Navigator screenOptions={styles.screenOptions}>
         {TabArr.map((item, index) => {
           return (
@@ -123,19 +123,24 @@ const styles = StyleSheet.create({
   screenOptions: {
     headerShown: false,
     tabBarStyle: {
-      height: 60,
+      height: 65,
       position: 'absolute',
       bottom: 16,
       right: 16,
       left: 16,
       borderRadius: 16,
+      elevation: 8,
+      shadowColor: '#52006A',
+      shadowOffset: { width: -2, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
     },
   },
   container: {
     flex: 1,
   },
-  AnimateContainer: { 
-    paddingTop: 14,
+  AnimateContainer: {
+    paddingTop: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },

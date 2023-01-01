@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   Image,
   Modal as ReactModal
 } from 'react-native';
-import {DraggableGrid} from 'react-native-draggable-grid';
+import { DraggableGrid } from 'react-native-draggable-grid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   Button,
@@ -16,19 +16,19 @@ import {
   Modal,
   TextInput,
 } from 'react-native-paper';
-import {photos} from '../sampleTestingData';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { photos } from '../sampleTestingData';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import uuid from 'react-native-uuid';
 import ImageViewer from 'react-native-image-zoom-viewer-fixed';
 
-const TakePhotoScreen = ({navigation}) => {
+const TakePhotoScreen = ({ navigation }) => {
   const [photoList, setPhotoList] = useState(photos);
   const [openModel, setOpenModel] = useState(false);
   const [imageGallery, setImageGallery] = useState([]);
   const [openDescModel, setOpenDescModel] = useState(false);
   const [currKey, setCurrKey] = useState('');
   const [currBase64, setCurrBase64] = useState('');
-  const containerStyle = {backgroundColor: 'white', padding: 20};
+  const containerStyle = { backgroundColor: 'white', padding: 20 };
   const showModal = () => setOpenDescModel(true);
   const hideModal = () => setOpenDescModel(false);
 
@@ -44,12 +44,12 @@ const TakePhotoScreen = ({navigation}) => {
     let newGalleryList = [];
     for (const obj of deepCloneObjs) {
       if (obj.key === key) {
-        newGalleryList.push({url: obj.base64});
+        newGalleryList.push({ url: obj.base64 });
       }
     }
     for (const obj of deepCloneObjs) {
       if (obj.key !== key) {
-        newGalleryList.push({url: obj.base64});
+        newGalleryList.push({ url: obj.base64 });
       }
     }
     setImageGallery(newGalleryList);
@@ -119,8 +119,8 @@ const TakePhotoScreen = ({navigation}) => {
           source={{
             uri: item.base64,
           }}
-          imageStyle={{borderRadius: 6}}
-          style={{height: 104, width: 104}}>
+          imageStyle={{ borderRadius: 6 }}
+          style={{ height: 104, width: 104 }}>
           <TouchableHighlight onPress={() => deletePhoto(item.key)}>
             <Ionicons style={styles.close} name="ios-close-circle" size={25} />
           </TouchableHighlight>
@@ -140,11 +140,11 @@ const TakePhotoScreen = ({navigation}) => {
     <View style={styles.wrapper}>
       <ReactModal visible={openModel} transparent={true}>
         <ImageViewer
-            renderArrowLeft={() => <Ionicons style={{marginLeft: 6}} name="arrow-back-circle-sharp" color="grey" size={30} />}
-            renderArrowRight={() => <Ionicons style={{marginRight: 6}} name="arrow-forward-circle" color="grey" size={30} />}
-            backgroundColor="white"
-            enableSwipeDown={true}
-            enablePreload={true}
+          renderArrowLeft={() => <Ionicons style={{ marginLeft: 6 }} name="arrow-back-circle-sharp" color="grey" size={30} />}
+          renderArrowRight={() => <Ionicons style={{ marginRight: 6 }} name="arrow-forward-circle" color="grey" size={30} />}
+          backgroundColor="white"
+          enableSwipeDown={true}
+          enablePreload={true}
           onCancel={() => {
             setOpenModel(false);
           }}
@@ -157,7 +157,7 @@ const TakePhotoScreen = ({navigation}) => {
           onDismiss={hideModal}
           contentContainerStyle={containerStyle}>
           <Image
-            style={{width: 200, height: 200, alignSelf: 'center'}}
+            style={{ width: 200, height: 200, alignSelf: 'center' }}
             source={{
               uri: currBase64,
             }}
@@ -170,22 +170,22 @@ const TakePhotoScreen = ({navigation}) => {
           />
         </Modal>
       </Portal>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-      <Button
-        style={{marginBottom: 20, width: '40%'}}
-        icon="camera"
-        mode="elevated"
-        onPress={() => takePhoto("take")}>
-        Take Photos
-      </Button>
-      <Text>    </Text>
-      <Button
-        style={{marginBottom: 20, width: '40%'}}
-        icon="image-album"
-        mode="elevated"
-        onPress={() => takePhoto("pick")}>
-        Pick Photos
-      </Button></View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <Button
+          style={{ marginBottom: 20, width: '100%' }}
+          icon="camera"
+          mode="elevated"
+          onPress={() => takePhoto("take")}>
+          Take Photos
+        </Button>
+        <Text>    </Text>
+        <Button
+          style={{ marginBottom: 20, width: '100%' }}
+          icon="image-album"
+          mode="elevated"
+          onPress={() => takePhoto("pick")}>
+          Pick Photos
+        </Button></View>
       <DraggableGrid
         numColumns={3}
         renderItem={renderItem}

@@ -145,6 +145,9 @@ const LoginScreen = ({ navigation }) => {
             duration={2500}>
             {loginMsg}
           </Snackbar>
+          <View style={{position: 'absolute', bottom: 5}}>
+            <Text style={{fontSize: 11,  color: 'black'}}>© 2022 SOCAM Development Limited All Rights Reserved</Text>
+          </View>
         </ImageBackground>
       </View>
     </SafeAreaView>

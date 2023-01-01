@@ -117,7 +117,7 @@ const style = StyleSheet.create({
     padding: 10,
   },
   fabStyle: {
-    bottom: 75,
+    bottom: 45,
     right: 0,
     position: 'absolute',
   },

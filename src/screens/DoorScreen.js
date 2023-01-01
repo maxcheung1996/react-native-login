@@ -74,7 +74,10 @@ const DoorScreen = ({navigation}) => {
             },
           ]}
         />
-        <Searchbar
+      </View>
+      <View style={{paddingLeft: 10,
+    paddingRight: 10,paddingBottom: 5}}>
+      <Searchbar
           style={style.searchBar}
           elevation="3"
           placeholderTextColor={'grey'}
