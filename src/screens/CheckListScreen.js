@@ -2,9 +2,10 @@ import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../context/GlobalContext';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {FAB, Portal, Text, TextInput} from 'react-native-paper';
+import {FAB, Text, TextInput, List} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
 import {EformResultGlobal} from '../database/schema/EformResultGlobal';
+import {EformResultDetail} from '../database/schema/EformResultDetail';
 import {realmRead} from '../database/service/crud';
 
 const CheckListScreen = ({navigation}) => {
@@ -17,10 +18,13 @@ const CheckListScreen = ({navigation}) => {
   const onSubmit = data => console.log(data);
   const [open, setFABOpen] = useState(false);
   const {eformResultGuid, lang} = useContext(GlobalContext);
-  const [checkList, setCheckList] = useState([]);
+  const [checkListGlobal, setCheckListGlobal] = useState([]);
+  const [checkListDetail, setCheckListDetail] = useState([]);
   const routeToScreen = (screen) => {
     navigation.push(screen);
   };
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
 
   useEffect(() => {
     getCheckListFrDBByEFormGuid(eformResultGuid);
@@ -29,28 +33,41 @@ const CheckListScreen = ({navigation}) => {
   const checkListTest = ['firstName', 'lastName', 'number'];
 
   const getCheckListFrDBByEFormGuid = async eformResultGuid => {
-    let checkList = [];
+    let checkListGlobal = [];
+    let checkListDetail = [];
     try {
-      checkList = await realmRead(
+      checkListGlobal = await realmRead(
         EformResultGlobal,
         'EformResultGlobal',
         `eformResultGuid == '${eformResultGuid}'`,
       );
 
-      setCheckList(checkList);
+      setCheckListGlobal(checkListGlobal);
+
+      checkListDetail = await realmRead(
+          EformResultDetail, 
+          'EformResultDetail', 
+          `eformResultGuid == '${eformResultGuid}'`
+      );
+
+      setCheckListDetail(checkListDetail);
 
       // realm.close();
-      return checkList;
+      //return checkListGlobal;
     } catch (error) {
       console.log('getDoorFrDB error: ', error);
-      setCheckList(checkList);
-      return checkList;
+      setCheckListGlobal(checkListGlobal);
+      setCheckListDetail(checkListDetail);
+      //return checkListGlobal;
     }
   };
 
+  let currSection = '';
+  let sectionArr = [];
+
   return (
     <View style={style.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <Text>
           {aahkDoor} - {eformResultGuid}
         </Text>
@@ -72,6 +89,47 @@ const CheckListScreen = ({navigation}) => {
             />
           );
         })}
+        {checkListDetail.map((v, i) => {
+          
+          
+          if(v.sectionGroupId !== "G00"){           
+            if(v.formType1 === "SECTION") {
+              console.log("==:", v.header1)
+              //console.log(sectionArr)
+                // if(sectionArr.length > 0){
+                //   return(
+                //   sectionArr.map((z, zi) => {
+                //     //console.log(z)
+                //     return(
+                //     <Text key={zi}>{z.header1}</Text>
+                //     )
+                //   })
+                //   )
+                // }
+                sectionArr = [];
+                currSection = v.header1; 
+                console.log("push:", v.header1);
+                sectionArr.push(v)                      
+            } else{
+              
+              if(currSection === v.sectionTitle){
+                sectionArr.push(v)
+              } 
+            }           
+          }
+
+          // return(
+          //   <Text key={i}>{v.header1} {v.formType1} {v.sectionGroupId} {v.sectionTitle}</Text>
+          // )
+        })}
+        {/* <List.Accordion
+        title="Controlled Accordion"
+        left={props => <List.Icon {...props} icon="folder" />}
+        expanded={expanded}
+        onPress={handlePress}>
+        <List.Item title="First item" />
+        <List.Item title="Second item" />
+      </List.Accordion> */}
       </ScrollView>
         <FAB.Group
           style={style.fabStyle}
@@ -115,6 +173,7 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    
   },
   fabStyle: {
     bottom: 45,
