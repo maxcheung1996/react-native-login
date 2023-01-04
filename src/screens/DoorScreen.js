@@ -4,7 +4,9 @@ import {getColorByStatus, getDoorFrDB} from '../helper';
 import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomList from '../components/CustomList';
-import {List, Searchbar, SegmentedButtons} from 'react-native-paper';
+import {List, Searchbar, SegmentedButtons, Text} from 'react-native-paper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DoorScreen = ({navigation}) => {
   const {
@@ -62,22 +64,43 @@ const DoorScreen = ({navigation}) => {
           buttons={[
             {
               value: 'ISSUE',
-              label: 'Issue',
+              label: <Text style={{color: '#FFA500'}}>Issue</Text>,
+              icon: () => (
+                <Ionicons
+                  color={'#FFA500'}
+                  name="ios-information-circle-sharp"
+                  size={16}
+                />
+              ),
             },
             {
               value: 'PROGRESS',
-              label: 'In Progress',
+              label: <Text style={{color: '#16bbff'}}>In Progress</Text>,
+              icon: () => (
+                <MaterialCommunityIcons
+                  color={'#16bbff'}
+                  name="progress-pencil"
+                  size={16}
+                />
+              ),
             },
             {
               value: 'COMPLETED',
               label: 'Completed',
+              label: <Text style={{color: '#00FF00'}}>Completed</Text>,
+              icon: () => (
+                <Ionicons
+                  color={'#00FF00'}
+                  name="ios-checkmark-done-circle"
+                  size={16}
+                />
+              ),
             },
           ]}
         />
       </View>
-      <View style={{paddingLeft: 10,
-    paddingRight: 10,paddingBottom: 5}}>
-      <Searchbar
+      <View style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 5}}>
+        <Searchbar
           style={style.searchBar}
           elevation="3"
           placeholderTextColor={'grey'}
@@ -143,6 +166,9 @@ const style = StyleSheet.create({
   searchBar: {
     backgroundColor: 'white',
     marginTop: 10,
+  },
+  labelStyle: {
+    color: 'red',
   },
 });
 

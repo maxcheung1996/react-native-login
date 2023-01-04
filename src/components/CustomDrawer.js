@@ -28,9 +28,7 @@ const CustomDrawer = props => {
   return (
     <View style={{flex: 1}}>
       <>
-        <DrawerContentScrollView
-          {...props}
-          contentContainerStyle={{}}>
+        <DrawerContentScrollView {...props} contentContainerStyle={{}}>
           <ImageBackground
             source={require('../images/building.jpg')}
             style={{padding: 20, marginTop: -4}}>
@@ -47,19 +45,22 @@ const CustomDrawer = props => {
               <>
                 <Text
                   style={{
-                    color: '#fff',
+                    color: '#3ef0ed',
                     fontSize: 18,
                     fontFamily: 'System',
                     marginBottom: 5,
+                    fontWeight: 'bold',
                   }}>
                   {userInfo.fullname}
                 </Text>
                 <View style={{flexDirection: 'row'}}>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: '#000000',
                       fontFamily: 'System',
                       marginRight: 5,
+                      backgroundColor: 'rgba(255,255,255,0.5)',
+                      borderRadius: 5,
                     }}>
                     {userInfo.usermail}
                   </Text>
@@ -183,7 +184,10 @@ const CustomDrawer = props => {
                 onPress={() => {
                   props.navigation.navigate('Setting');
                 }}
-                style={[{paddingVertical: 8 }, getDrawerStyle(props, 'Setting')]}>
+                style={[
+                  {paddingVertical: 8},
+                  getDrawerStyle(props, 'Setting'),
+                ]}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name="ios-settings-outline" size={16} />
                   <Text
@@ -204,7 +208,7 @@ const CustomDrawer = props => {
                 onPress={() => {
                   logout();
                 }}
-                style={[{paddingVertical: 8 }]}>
+                style={[{paddingVertical: 8}]}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name="exit-outline" size={16} />
                   <Text
@@ -227,8 +231,13 @@ const CustomDrawer = props => {
               onPress={() => {
                 props.navigation.navigate('Setting');
               }}
-              style={[{paddingVertical: 10 }, getDrawerStyle(props, 'Setting')]}>
-              <View style={{flexDirection: 'row', alignItems: 'center', paddingLeft: 10}}>
+              style={[{paddingVertical: 10}, getDrawerStyle(props, 'Setting')]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingLeft: 10,
+                }}>
                 <Ionicons name="ios-settings-outline" size={16} />
                 <Text
                   style={{
@@ -260,8 +269,7 @@ const getDrawerStyle = (props, name) => {
       shadowOpacity: 0.2,
     };
   } else {
-    return {
-    };
+    return {};
   }
 };
 

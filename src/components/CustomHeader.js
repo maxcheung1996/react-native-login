@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 70,
     shadowColor: '#000',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 17,
+    borderBottomRightRadius: 17,
     elevation: 30,
   },
 });

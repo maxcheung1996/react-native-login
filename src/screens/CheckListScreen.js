@@ -20,7 +20,7 @@ const CheckListScreen = ({navigation}) => {
   const {eformResultGuid, lang} = useContext(GlobalContext);
   const [checkListGlobal, setCheckListGlobal] = useState([]);
   const [checkListDetail, setCheckListDetail] = useState([]);
-  const routeToScreen = (screen) => {
+  const routeToScreen = screen => {
     navigation.push(screen);
   };
   const [expanded, setExpanded] = useState(true);
@@ -45,9 +45,9 @@ const CheckListScreen = ({navigation}) => {
       setCheckListGlobal(checkListGlobal);
 
       checkListDetail = await realmRead(
-          EformResultDetail, 
-          'EformResultDetail', 
-          `eformResultGuid == '${eformResultGuid}'`
+        EformResultDetail,
+        'EformResultDetail',
+        `eformResultGuid == '${eformResultGuid}'`,
       );
 
       setCheckListDetail(checkListDetail);
@@ -90,32 +90,28 @@ const CheckListScreen = ({navigation}) => {
           );
         })}
         {checkListDetail.map((v, i) => {
-          
-          
-          if(v.sectionGroupId !== "G00"){           
-            if(v.formType1 === "SECTION") {
-              console.log("==:", v.header1)
+          if (v.sectionGroupId !== 'G00') {
+            if (v.formType1 === 'SECTION') {
+              //console.log('==:', v.header1);
               //console.log(sectionArr)
-                // if(sectionArr.length > 0){
-                //   return(
-                //   sectionArr.map((z, zi) => {
-                //     //console.log(z)
-                //     return(
-                //     <Text key={zi}>{z.header1}</Text>
-                //     )
-                //   })
-                //   )
-                // }
-                sectionArr = [];
-                currSection = v.header1; 
-                console.log("push:", v.header1);
-                sectionArr.push(v)                      
-            } else{
-              
-              if(currSection === v.sectionTitle){
-                sectionArr.push(v)
-              } 
-            }           
+              if (sectionArr.length > 0) {
+                console.log(
+                  `sectionArr2: ${sectionArr[0].header1} count : ${sectionArr.length}`,
+                );
+                // return sectionArr.map((z, zi) => {
+                //   //console.log(z)
+                //   return <Text key={zi}>{z.header1}</Text>;
+                // });
+              }
+              sectionArr = [];
+              currSection = v.header1;
+              //console.log('push:', v.header1);
+              sectionArr.push(v);
+            } else {
+              if (currSection === v.sectionTitle) {
+                sectionArr.push(v);
+              }
+            }
           }
 
           // return(
@@ -131,40 +127,40 @@ const CheckListScreen = ({navigation}) => {
         <List.Item title="Second item" />
       </List.Accordion> */}
       </ScrollView>
-        <FAB.Group
-          style={style.fabStyle}
-          open={open}
-          visible
-          icon={open ? 'close-circle-outline' : 'plus'}
-          actions={[
-            {
-              icon: 'camera-plus-outline',
-              label: lang == "en" ? 'Take Photo' : '拍照',
-              style: {backgroundColor: '#5bc0de'},
-              onPress: () => routeToScreen("TakePhoto"),
-            },
-            {
-              icon: 'content-save-edit-outline',
-              label: lang == "en" ? 'Save' : '儲存',
-              style: {backgroundColor: '#00FF00'},
-              onPress: handleSubmit(onSubmit),
-            },
-            {
-              icon: 'clipboard-check-multiple-outline',
-              label: lang == "en" ? 'Complete' : '完成',
-              style: {backgroundColor: '#FFD801'},
-              onPress: handleSubmit(onSubmit),
-            },
-          ]}
-          onStateChange={() => {
-            setFABOpen(!open);
-          }}
-          onPress={() => {
-            if (open) {
-              // do something if the speed dial is open
-            }
-          }}
-        />
+      <FAB.Group
+        style={style.fabStyle}
+        open={open}
+        visible
+        icon={open ? 'close-circle-outline' : 'plus'}
+        actions={[
+          {
+            icon: 'camera-plus-outline',
+            label: lang == 'en' ? 'Take Photo' : '拍照',
+            style: {backgroundColor: '#5bc0de'},
+            onPress: () => routeToScreen('TakePhoto'),
+          },
+          {
+            icon: 'content-save-edit-outline',
+            label: lang == 'en' ? 'Save' : '儲存',
+            style: {backgroundColor: '#00FF00'},
+            onPress: handleSubmit(onSubmit),
+          },
+          {
+            icon: 'clipboard-check-multiple-outline',
+            label: lang == 'en' ? 'Complete' : '完成',
+            style: {backgroundColor: '#FFD801'},
+            onPress: handleSubmit(onSubmit),
+          },
+        ]}
+        onStateChange={() => {
+          setFABOpen(!open);
+        }}
+        onPress={() => {
+          if (open) {
+            // do something if the speed dial is open
+          }
+        }}
+      />
     </View>
   );
 };
@@ -173,10 +169,9 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    
   },
   fabStyle: {
-    bottom: 45,
+    bottom: 75,
     right: 0,
     position: 'absolute',
   },
