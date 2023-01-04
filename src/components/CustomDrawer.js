@@ -6,13 +6,13 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {AuthContext} from '../context/AuthContext';
@@ -30,12 +30,12 @@ const CustomDrawer = props => {
       <>
         <DrawerContentScrollView
           {...props}
-          contentContainerStyle={{backgroundColor: '#8200d6'}}>
+          contentContainerStyle={{}}>
           <ImageBackground
-            source={require('../images/menu-bg.jpeg')}
-            style={{padding: 20}}>
+            source={require('../images/building.jpg')}
+            style={{padding: 20, marginTop: -4}}>
             <Image
-              source={require('../images/user-profile.jpg')}
+              source={require('../images/worker-icon.png')}
               style={{
                 height: 80,
                 width: 80,
@@ -76,9 +76,7 @@ const CustomDrawer = props => {
             {userInfo.token ? (
               <>
                 <DrawerItem
-                  activeBackgroundColor={'#aa18ea'}
-                  activeTintColor={'#fff'}
-                  inactiveTintColor={'#333'}
+                  style={getDrawerStyle(props, 'CMMS')}
                   labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="home-outline" size={22} />}
                   label={
@@ -94,19 +92,17 @@ const CustomDrawer = props => {
                 />
 
                 <DrawerItem
-                  activeBackgroundColor={'#aa18ea'}
-                  activeTintColor={'#fff'}
-                  inactiveTintColor={'#333'}
+                  style={getDrawerStyle(props, 'Stress Test')}
                   labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => (
                     <Ionicons name="arrow-down-circle-outline" size={22} />
                   )}
                   label={
                     lang == 'en'
-                      ? 'Stress Tests'
+                      ? 'Stress Test'
                       : lang == 'zh'
                       ? '壓力測試'
-                      : 'Stress Tests'
+                      : 'Stress Test'
                   }
                   onPress={() => {
                     props.navigation.navigate('Stress Test');
@@ -116,48 +112,44 @@ const CustomDrawer = props => {
             ) : (
               <>
                 <DrawerItem
-                  activeBackgroundColor={'#aa18ea'}
-                  activeTintColor={'#fff'}
-                  inactiveTintColor={'#333'}
+                  style={getDrawerStyle(props, 'Login')}
                   labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="log-in-outline" size={22} />}
-                  label={lang == 'en'
-                  ? 'Login'
-                  : lang == 'zh'
-                  ? '登入'
-                  : 'Login'}
+                  label={
+                    lang == 'en' ? 'Login' : lang == 'zh' ? '登入' : 'Login'
+                  }
                   onPress={() => {
                     props.navigation.navigate('Login');
                   }}
                 />
 
                 <DrawerItem
-                  activeBackgroundColor={'#aa18ea'}
-                  activeTintColor={'#fff'}
-                  inactiveTintColor={'#333'}
+                  style={getDrawerStyle(props, 'Register')}
                   labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="person-add-outline" size={22} />}
-                  label={lang == 'en'
-                  ? 'Register'
-                  : lang == 'zh'
-                  ? '注冊'
-                  : 'Register'}
+                  label={
+                    lang == 'en'
+                      ? 'Register'
+                      : lang == 'zh'
+                      ? '注冊'
+                      : 'Register'
+                  }
                   onPress={() => {
                     props.navigation.navigate('Register');
                   }}
                 />
 
-                  <DrawerItem
-                  activeBackgroundColor={'#aa18ea'}
-                  activeTintColor={'#fff'}
-                  inactiveTintColor={'#333'}
+                <DrawerItem
+                  style={getDrawerStyle(props, 'TakePhoto')}
                   labelStyle={{fontFamily: 'System', fontSize: 15}}
                   icon={() => <Ionicons name="log-in-outline" size={22} />}
-                  label={lang == 'en'
-                  ? 'TakePhoto'
-                  : lang == 'zh'
-                  ? '照相'
-                  : 'TakePhoto'}
+                  label={
+                    lang == 'en'
+                      ? 'TakePhoto'
+                      : lang == 'zh'
+                      ? '照相'
+                      : 'TakePhoto'
+                  }
                   onPress={() => {
                     props.navigation.navigate('TakePhoto');
                   }}
@@ -191,12 +183,12 @@ const CustomDrawer = props => {
                 onPress={() => {
                   props.navigation.navigate('Setting');
                 }}
-                style={{paddingVertical: 15}}>
+                style={[{paddingVertical: 8 }, getDrawerStyle(props, 'Setting')]}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Ionicons name="ios-settings-outline" size={22} />
+                  <Ionicons name="ios-settings-outline" size={16} />
                   <Text
                     style={{
-                      fontSize: 15,
+                      fontSize: 13,
                       fontFamily: 'System',
                       marginLeft: 5,
                     }}>
@@ -212,20 +204,20 @@ const CustomDrawer = props => {
                 onPress={() => {
                   logout();
                 }}
-                style={{paddingVertical: 15}}>
+                style={[{paddingVertical: 8 }]}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Ionicons name="exit-outline" size={22} />
+                  <Ionicons name="exit-outline" size={16} />
                   <Text
                     style={{
-                      fontSize: 15,
+                      fontSize: 13,
                       fontFamily: 'System',
                       marginLeft: 5,
                     }}>
                     {lang == 'en'
-                      ? 'Sign Out'
+                      ? 'SignOut'
                       : lang == 'zh'
                       ? '登出'
-                      : 'Sign Out'}
+                      : 'SignOut'}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -235,12 +227,12 @@ const CustomDrawer = props => {
               onPress={() => {
                 props.navigation.navigate('Setting');
               }}
-              style={{paddingVertical: 15}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Ionicons name="ios-settings-outline" size={22} />
+              style={[{paddingVertical: 10 }, getDrawerStyle(props, 'Setting')]}>
+              <View style={{flexDirection: 'row', alignItems: 'center', paddingLeft: 10}}>
+                <Ionicons name="ios-settings-outline" size={16} />
                 <Text
                   style={{
-                    fontSize: 15,
+                    fontSize: 13,
                     fontFamily: 'System',
                     marginLeft: 5,
                   }}>
@@ -253,6 +245,24 @@ const CustomDrawer = props => {
       </>
     </View>
   );
+};
+
+const getDrawerStyle = (props, name) => {
+  if (
+    props.state.index === props.state.routes.findIndex(e => e.name === name)
+  ) {
+    return {
+      backgroundColor: '#dbedf1',
+      borderRadius: 15,
+      elevation: 7,
+      shadowColor: '#52006A',
+      shadowOffset: {width: -2, height: 4},
+      shadowOpacity: 0.2,
+    };
+  } else {
+    return {
+    };
+  }
 };
 
 export default CustomDrawer;

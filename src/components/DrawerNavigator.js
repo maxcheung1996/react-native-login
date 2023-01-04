@@ -23,8 +23,8 @@ const DrawerNavigator = () => {
       screenOptions={{
         headerShown: false,
         drawerActiveBackgroundColor: '#aa18ea',
-        drawerActiveTintColor: '#fff',
-        drawerInactiveTintColor: '#333',
+        drawerActiveTintColor: "white",
+        drawerInactiveTintColor: "yellow",
         drawerLabelStyle: {
           //marginLeft: -25,
           fontFamily: 'System',

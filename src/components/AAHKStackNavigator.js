@@ -62,10 +62,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -142,10 +142,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -222,10 +222,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -302,10 +302,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -403,10 +403,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -504,10 +504,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
@@ -611,10 +611,10 @@ const AAHKStackNavigator = ({navigation}) => {
                           }}
                           title={
                             lang == 'en'
-                              ? 'Sign Out'
+                              ? 'SignOut'
                               : lang == 'zh'
                               ? '登出'
-                              : 'Sign Out'
+                              : 'SignOut'
                           }
                         />
                         <Divider bold={true} />
