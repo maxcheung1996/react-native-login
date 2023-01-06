@@ -23,8 +23,8 @@ import NetworkBar from '../components/NetworkBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState("itadmin");
+  const [password, setPassword] = useState("Abcd.1234");
   const { isLoading, login, loginVisible, loginMsg, setLoginVisible } =
     useContext(AuthContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
