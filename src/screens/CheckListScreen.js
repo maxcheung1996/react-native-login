@@ -9,6 +9,7 @@ import {EformResultDetail} from '../database/schema/EformResultDetail';
 import {realmRead} from '../database/service/crud';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
 
 const CheckListScreen = ({navigation}) => {
   const {aahkDoor} = useContext(GlobalContext);
@@ -141,10 +142,14 @@ const CheckListScreen = ({navigation}) => {
               />
             );
           } else if (v.formType1 === 'DROPDOWN') {
-            let option = [];
+            let options = [];
             if(v.ansOption1){
+              let option = [];
               if(v.ansOption1.indexOf("|") > -1){
                 option = v.ansOption1.split("|");
+              }
+              for(const item of option) {
+                options.push({label: item, value: item});
               }
             }
             
@@ -152,19 +157,32 @@ const CheckListScreen = ({navigation}) => {
               <View key={i}>
                 <Text style={style.dropdownText}>{v.header1}</Text>
 
-                <View
-                  style={style.pickerView}>
-                  <Picker
+                <View style={style.pickerView}>
+                  {/* <Picker
                     style={{height: 43}}
                     itemStyle={{height: 43}}
                     selectedValue={v.ans1}
                     onValueChange={(itemValue, itemIndex) =>
-                      handlechange(v.eformResultDetailGuid, itemValue, v.formType1)
+                      handlechange(
+                        v.eformResultDetailGuid,
+                        itemValue,
+                        v.formType1,
+                      )
                     }>
                     {option.map((v, i) => {
                       return <Picker.Item key={i} label={v} value={v} />;
                     })}
-                  </Picker>
+                  </Picker> */}
+
+                  <RNPickerSelect
+                    value={v.ans1}
+                    onValueChange={value => handlechange(
+                      v.eformResultDetailGuid,
+                      value,
+                      v.formType1,
+                    )}
+                    items={options}
+                  />
                 </View>
               </View>
             );
