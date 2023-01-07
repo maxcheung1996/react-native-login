@@ -1,28 +1,30 @@
-import {useContext, useEffect, useState} from 'react';
-import {GlobalContext} from '../context/GlobalContext';
-import {View, StyleSheet, Platform, Button} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {Checkbox, FAB, IconButton, List, Text, TextInput} from 'react-native-paper';
-import {useForm, Controller} from 'react-hook-form';
-import {EformResultGlobal} from '../database/schema/EformResultGlobal';
-import {EformResultDetail} from '../database/schema/EformResultDetail';
-import {realmRead} from '../database/service/crud';
-import {Picker} from '@react-native-picker/picker';
+import React, { useContext, useEffect, useState } from 'react';
+import { GlobalContext } from '../context/GlobalContext';
+import { View, StyleSheet, Platform, Button } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Checkbox, FAB, IconButton, List, Text, TextInput } from 'react-native-paper';
+import { useForm, Controller } from 'react-hook-form';
+import { EformResultGlobal } from '../database/schema/EformResultGlobal';
+import { EformResultDetail } from '../database/schema/EformResultDetail';
+import { realmRead } from '../database/service/crud';
+import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CheckListScreen = ({navigation}) => {
-  const {aahkDoor} = useContext(GlobalContext);
+const CheckListScreen = ({ navigation }) => {
+  const { aahkDoor } = useContext(GlobalContext);
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm({});
   const onSubmit = data => console.log(data);
   const [open, setFABOpen] = useState(false);
-  const {eformResultGuid, lang} = useContext(GlobalContext);
+  const { eformResultGuid, lang } = useContext(GlobalContext);
   const [checkListGlobal, setCheckListGlobal] = useState([]);
   const [checkListDetail, setCheckListDetail] = useState([]);
+  const [hideList, setHideList] = useState([]);
   const routeToScreen = screen => {
     navigation.push(screen);
   };
@@ -34,11 +36,27 @@ const CheckListScreen = ({navigation}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState('');
 
+  const refreshHideList = (sectionGroupId) => {
+    console.log('refreshHideList start: ', sectionGroupId);
+    let tmp_hideList = [...hideList];
+    if(tmp_hideList.indexOf(sectionGroupId) > -1){
+      tmp_hideList = tmp_hideList.filter((v, i) => {return v !== sectionGroupId})
+      console.log(`tmp index ${tmp_hideList}`);
+      setHideList(tmp_hideList);
+      setCheckListDetail(checkListDetail);
+    }else{
+      tmp_hideList.push(sectionGroupId);
+      console.log(`tmp ${tmp_hideList}`);
+      setHideList(tmp_hideList);
+      setCheckListDetail(checkListDetail);
+    }
+  }
+
   const onChange = (selectedDate, guid, formType1) => {
     setShow('');
     console.log("selectedDate: ", selectedDate.nativeEvent.timestamp);
     handlechange(guid, selectedDate.nativeEvent.timestamp, formType1)
-    
+
   };
 
   const showMode = (currentMode, guid) => {
@@ -80,8 +98,8 @@ const CheckListScreen = ({navigation}) => {
   const handlechange = (eformResultDetailGuid, value, formType1) => {
     console.log(`handlechange start ${eformResultDetailGuid} ${value} ${formType1}`);
     let newCheckListDetail = [...checkListDetail];
-    for(const [index, detail] of newCheckListDetail.entries()){
-      if(detail.eformResultDetailGuid === eformResultDetailGuid){
+    for (const [index, detail] of newCheckListDetail.entries()) {
+      if (detail.eformResultDetailGuid === eformResultDetailGuid) {
         if (formType1 === 'SELECT') {
           newCheckListDetail[index].ans1 = newCheckListDetail[index].ans1 === "1" ? "" : "1"
         } else {
@@ -95,8 +113,8 @@ const CheckListScreen = ({navigation}) => {
   const eraseInput = (guid) => {
     console.log(`eraseInput start ${guid}`);
     let newCheckListDetail = [...checkListDetail];
-    for(const [index, detail] of newCheckListDetail.entries()){
-      if(detail.eformResultDetailGuid === guid){
+    for (const [index, detail] of newCheckListDetail.entries()) {
+      if (detail.eformResultDetailGuid === guid) {
         newCheckListDetail[index].ans1 = "";
       }
     }
@@ -105,132 +123,143 @@ const CheckListScreen = ({navigation}) => {
 
   return (
     <View style={style.container}>
-      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
-        {checkListDetail.map((v, i) => {
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        <View >
+          <List.Section>
+            <List.Subheader
+              style={style.subheader}>
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                {"基本資料"}
+              </Text>
+            </List.Subheader>
+          </List.Section>
+        </View>
+        {React.Children.toArray(checkListDetail.map((v, i) => {
           if (v.formType1 === 'SECTION') {
             return (
-              <List.Section key={i}>
-                <List.Subheader
-                  style={style.subheader}>
-                  <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                    {v.header1}
+              <View style={style.subheader}>
+                <View style={{ paddingLeft: 5, flex: 1, alignItems: 'flex-start', justifyContent: 'center' }}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                    {v.header1} {v.sectionGroupId}
                   </Text>
-                </List.Subheader>
-              </List.Section>
+                </View>
+                <View style={{ paddingRight: 5, flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
+                  <Ionicons onPress={() => {refreshHideList(v.sectionGroupId)}} name={hideList.indexOf(v.sectionGroupId) > -1 ? "chevron-back-sharp": "chevron-down-sharp"} style={{color: '#fff'}} size={13} color="gray" />
+                </View>
+              </View>
             );
           } else if (v.formType1 === 'SELECT') {
             return (
               <>
-                    <View key={i} style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={{fontSize: 13}}>
-                        {v.header1} {v.ansOption1}
-                      </Text>
-                      <Checkbox status={v.ans1 === "1" ? 'checked' : 'unchecked'} onPress={() => handlechange(v.eformResultDetailGuid, v.ans1, v.formType1)} />
-                    </View>
+                <View style={[{ flexDirection: 'row', alignItems: 'center' }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
+                  <Text style={{ fontSize: 13 }}>
+                    {v.header1} {v.ansOption1}
+                  </Text>
+                  <Checkbox.Android status={v.ans1 === "1" ? 'checked' : 'unchecked'} onPress={() => handlechange(v.eformResultDetailGuid, v.ans1, v.formType1)} />
+                </View>
               </>
             );
           } else if (v.formType1 === 'TEXTBOX') {
             return (
-              <TextInput
-                value={v.ans1}
-                key={i}
-                style={{fontSize: 13}}
-                mode={'outlined'}
-                label={v.header1}
-                right={<TextInput.Icon onPress={() => {eraseInput(v.eformResultDetailGuid)}} size={13} icon="eraser" />}
-                onChangeText={text => {handlechange(v.eformResultDetailGuid, text, v.formType1)}}
-              />
+              <View>
+                <TextInput
+                  value={v.ans1}
+                  style={[{ fontSize: 13 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}
+                  mode={'outlined'}
+                  label={v.header1}
+                  right={<TextInput.Icon onPress={() => { eraseInput(v.eformResultDetailGuid) }} size={13} icon="eraser" />}
+                  onChangeText={text => { handlechange(v.eformResultDetailGuid, text, v.formType1) }}
+                />
+              </View>
             );
           } else if (v.formType1 === 'DROPDOWN') {
             let options = [];
-            if(v.ansOption1){
+            if (v.ansOption1) {
               let option = [];
-              if(v.ansOption1.indexOf("|") > -1){
+              if (v.ansOption1.indexOf("|") > -1) {
                 option = v.ansOption1.split("|");
               }
-              for(const item of option) {
-                options.push({label: item, value: item});
+              for (const item of option) {
+                options.push({ label: item, value: item });
               }
             }
-            
+
+            let placeholder = {
+              label: 'Select an item...',
+              value: null,
+              color: '#9EA0A4',
+            };
+
             return (
-              <View key={i}>
+              <View style={[{ paddingBottom: 7 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
                 <Text style={style.dropdownText}>{v.header1}</Text>
-
-                <View style={style.pickerView}>
-                  {/* <Picker
-                    style={{height: 43}}
-                    itemStyle={{height: 43}}
-                    selectedValue={v.ans1}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handlechange(
-                        v.eformResultDetailGuid,
-                        itemValue,
-                        v.formType1,
-                      )
-                    }>
-                    {option.map((v, i) => {
-                      return <Picker.Item key={i} label={v} value={v} />;
-                    })}
-                  </Picker> */}
-
-                  <RNPickerSelect
-                    value={v.ans1}
-                    onValueChange={value => handlechange(
-                      v.eformResultDetailGuid,
-                      value,
-                      v.formType1,
-                    )}
-                    items={options}
-                  />
-                </View>
+                <RNPickerSelect
+                  placeholder={placeholder}
+                  style={{
+                    ...pickerSelectStyles, iconContainer: {
+                      top: 10,
+                      right: 12,
+                    }
+                  }}
+                  value={v.ans1}
+                  onValueChange={value => handlechange(
+                    v.eformResultDetailGuid,
+                    value,
+                    v.formType1,
+                  )}
+                  items={options}
+                  Icon={() => {
+                    return <Ionicons name="md-arrow-down" style={{ marginTop: 2 }} size={18} color="gray" />;
+                  }}
+                />
               </View>
             );
           } else if (v.formType1 === 'CALENDAR') {
             return (
-              <>
-                <View key={i}>
-                  <View>
-                    <TextInput
-                      value={v.ans1 ? new Date(v.ans1).toString() : new Date().toString()}
-                      editable={false}
-                      style={{fontSize: 13}}
-                      mode={'outlined'}
-                      label={v.header1}
-                      right={
-                        <TextInput.Icon
-                          onPress={() =>
-                            showDatepicker(v.eformResultDetailGuid)
-                          }
-                          icon="timetable"
-                        />
-                      }
-                    />
-                  </View>
-                  {show === v.eformResultDetailGuid && (
-                    <DateTimePicker
-                      testID={v.eformResultDetailGuid}
-                      value={v.ans1 ? new Date(v.ans1) : new Date()}
-                      mode={mode}
-                      is24Hour={true}
-                      display="default"
-                      onChange={(date) => onChange(date, v.eformResultDetailGuid, v.formType1)}
-                    />
-                  )}
+
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
+                <View>
+                  <TextInput
+                    value={v.ans1 ? new Date(v.ans1).toString() : new Date().toString()}
+                    editable={false}
+                    style={{ backgroundColor: '#fff', fontSize: 13 }}
+                    mode={'outlined'}
+                    label={v.header1}
+                    right={
+                      <TextInput.Icon
+                        onPress={() =>
+                          showDatepicker(v.eformResultDetailGuid)
+                        }
+                        icon="timetable"
+                      />
+                    }
+                  />
                 </View>
-              </>
+                {show === v.eformResultDetailGuid && (
+                  <DateTimePicker
+                    testID={v.eformResultDetailGuid}
+                    value={v.ans1 ? new Date(v.ans1) : new Date()}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={(date) => onChange(date, v.eformResultDetailGuid, v.formType1)}
+                  />
+                )}
+              </View>
+
             );
           } else {
             return (
-              <Text key={i}>
-                {v.header1} {v.formType1}
-              </Text>
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
+                <Text>
+                  {v.header1} {v.formType1}
+                </Text></View>
             );
           }
-        })}
+        }))}
       </ScrollView>
       <FAB.Group
-        style={style.fabStyle}
+        style={[style.fabStyle, { bottom: Platform.OS === 'ios' ? 40 : 75 }]}
         open={open}
         visible
         icon={open ? 'close-circle-outline' : 'plus'}
@@ -238,19 +267,19 @@ const CheckListScreen = ({navigation}) => {
           {
             icon: 'camera-plus-outline',
             label: lang == 'en' ? 'Take Photo' : '拍照',
-            style: {backgroundColor: '#5bc0de'},
+            style: { backgroundColor: '#5bc0de' },
             onPress: () => routeToScreen('TakePhoto'),
           },
           {
             icon: 'content-save-edit-outline',
             label: lang == 'en' ? 'Save' : '儲存',
-            style: {backgroundColor: '#00FF00'},
+            style: { backgroundColor: '#00FF00' },
             onPress: handleSubmit(onSubmit),
           },
           {
             icon: 'clipboard-check-multiple-outline',
             label: lang == 'en' ? 'Complete' : '完成',
-            style: {backgroundColor: '#FFD801'},
+            style: { backgroundColor: '#FFD801' },
             onPress: handleSubmit(onSubmit),
           },
         ]}
@@ -273,14 +302,13 @@ const style = StyleSheet.create({
     padding: 10,
   },
   fabStyle: {
-    bottom: 75,
     right: 0,
     position: 'absolute',
   },
   dropDownPicker: {
     elevation: 8,
     shadowColor: '#52006A',
-    shadowOffset: {width: -2, height: 4},
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     borderColor: 'white',
@@ -311,11 +339,38 @@ const style = StyleSheet.create({
     marginTop: 5
   },
   subheader: {
+    flex:1,
     flexDirection: 'row',
     backgroundColor: '#16bbff',
-    borderRadius: 8,
+    borderRadius: 6,
     elevation: 2,
+    height: 40,
+    marginTop: 8
   }
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
 });
 
 export default CheckListScreen;

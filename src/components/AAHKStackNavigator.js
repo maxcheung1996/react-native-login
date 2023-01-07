@@ -659,7 +659,7 @@ export const CustomMenu = props => {
           style={{top: 40, left: -90, width: '220%'}}
           visible={props.visible}
           onDismiss={props.closeMenu}
-          anchor={<IconButton icon="dots-vertical" onPress={props.openMenu} />}>
+          anchor={<IconButton style={{top: -1}} icon="dots-vertical" onPress={props.openMenu} />}>
           {props.items}
         </Menu>
       </View>
