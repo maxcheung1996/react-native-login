@@ -140,7 +140,7 @@ const CheckListScreen = ({ navigation }) => {
               <View style={style.subheader}>
                 <View style={{ paddingLeft: 5, flex: 1, alignItems: 'flex-start', justifyContent: 'center' }}>
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                    {v.header1} {v.sectionGroupId}
+                    {v.header1}
                   </Text>
                 </View>
                 <View style={{ paddingRight: 5, flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -151,7 +151,7 @@ const CheckListScreen = ({ navigation }) => {
           } else if (v.formType1 === 'SELECT') {
             return (
               <>
-                <View style={[{ flexDirection: 'row', alignItems: 'center' }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
+                <View style={[{ flexDirection: 'row', alignItems: 'center' }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1 ? {display: 'none'} : {}]}>
                   <Text style={{ fontSize: 13 }}>
                     {v.header1} {v.ansOption1}
                   </Text>
@@ -164,7 +164,7 @@ const CheckListScreen = ({ navigation }) => {
               <View>
                 <TextInput
                   value={v.ans1}
-                  style={[{ fontSize: 13 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}
+                  style={[{ fontSize: 13 }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}]}
                   mode={'outlined'}
                   label={v.header1}
                   right={<TextInput.Icon onPress={() => { eraseInput(v.eformResultDetailGuid) }} size={13} icon="eraser" />}
@@ -191,7 +191,7 @@ const CheckListScreen = ({ navigation }) => {
             };
 
             return (
-              <View style={[{ paddingBottom: 7 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
+              <View style={[{ paddingBottom: 7 }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}]}>
                 <Text style={style.dropdownText}>{v.header1}</Text>
                 <RNPickerSelect
                   placeholder={placeholder}
@@ -217,7 +217,7 @@ const CheckListScreen = ({ navigation }) => {
           } else if (v.formType1 === 'CALENDAR') {
             return (
 
-              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}}>
                 <View>
                   <TextInput
                     value={v.ans1 ? new Date(v.ans1).toString() : new Date().toString()}
@@ -250,7 +250,7 @@ const CheckListScreen = ({ navigation }) => {
             );
           } else {
             return (
-              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}}>
                 <Text>
                   {v.header1} {v.formType1}
                 </Text></View>
@@ -274,13 +274,19 @@ const CheckListScreen = ({ navigation }) => {
             icon: 'content-save-edit-outline',
             label: lang == 'en' ? 'Save' : '儲存',
             style: { backgroundColor: '#00FF00' },
-            onPress: handleSubmit(onSubmit),
+            onPress: () => handleSubmit(onSubmit),
           },
           {
             icon: 'clipboard-check-multiple-outline',
             label: lang == 'en' ? 'Complete' : '完成',
             style: { backgroundColor: '#FFD801' },
-            onPress: handleSubmit(onSubmit),
+            onPress: () => handleSubmit(onSubmit),
+          },
+          {
+            icon: hideList.indexOf('allSectionClose') > -1 ? 'chevron-left' : 'chevron-down',
+            label: hideList.indexOf('allSectionClose') > -1 ? lang == 'en' ? 'Expand' : '展開' : lang == 'en' ? 'Collapse' : '關閉',
+            style: { backgroundColor: '#eb8f34' },
+            onPress: () => refreshHideList("allSectionClose"),
           },
         ]}
         onStateChange={() => {
