@@ -15,6 +15,7 @@ import {
   Portal,
   Modal,
   TextInput,
+  Badge
 } from 'react-native-paper';
 import { photos } from '../sampleTestingData';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -95,7 +96,7 @@ const TakePhotoScreen = ({ navigation }) => {
       key: uuid.v4(),
       sort: (deepCloneObjs.length + 1).toString(),
       desc: '',
-      base64: 'data:image/gif;base64,' + result.assets[0].base64,
+      base64: 'data:image/jpg;base64,' + result.assets[0].base64,
     });
     setPhotoList(deepCloneObjs);
   };
@@ -114,24 +115,54 @@ const TakePhotoScreen = ({ navigation }) => {
 
   const renderItem = item => {
     return (
-      <View style={styles.item} key={item.key}>
+      <View style={{borderWidth: 0.2, width: 127, height: 127, color: 'grey', borderRadius: 6}}>
+        <ImageBackground
+        source={{
+          uri: item.base64,
+        }}
+        imageStyle={{ borderRadius: 6, height: 90, width: 90, left: 17.5, top: 11}}
+        style={{alignItems: 'center' }}>
+          <Badge style={styles.imageSort}>{item.sort}</Badge>
+          <View style={styles.fillCloseClose}/>
+          <TouchableHighlight style={styles.close} onPress={() => deletePhoto(item.key)}>
+            <Ionicons style={{color: 'tomato'}} name="ios-close-circle" size={25} />
+          </TouchableHighlight>
+          <View style={styles.fillCloseView}/>
+          <TouchableHighlight style={styles.view} onPress={() => viewPhoto(item.key)}>
+            <Ionicons style={{color: '#00FF00'}} name="eye" size={23} />
+          </TouchableHighlight> 
+          <TouchableHighlight style={styles.edit} onPress={() => editPhoto(item.key, item.base64)}>
+            <Ionicons style={{color: '#FFA500'}} name="pencil" size={19} />
+          </TouchableHighlight>
+        </ImageBackground>
+        <Text variant="bodySmall" style={{position: 'absolute', bottom: 0, left: 16.5}}>{item.desc}</Text>
+      {/* <View style={styles.item} key={item.key}>
         <ImageBackground
           source={{
             uri: item.base64,
           }}
-          imageStyle={{ borderRadius: 6 }}
-          style={{ height: 104, width: 104 }}>
+          imageStyle={{ borderRadius: 6}}
+          style={{ height: 104, width: 104, marginTop: 15, marginBottom: 20  }}>
+            <Badge style={styles.imageSort}>{item.sort}</Badge>
+          <View style={styles.fillCloseClose}/>
           <TouchableHighlight onPress={() => deletePhoto(item.key)}>
             <Ionicons style={styles.close} name="ios-close-circle" size={25} />
           </TouchableHighlight>
+          <View style={styles.fillCloseView}/>
           <TouchableHighlight onPress={() => viewPhoto(item.key)}>
             <Ionicons style={styles.view} name="eye" size={23} />
+          </TouchableHighlight>         
+          <TouchableHighlight style={styles.edit} onPress={() => editPhoto(item.key, item.base64)}>
+            <Ionicons style={{color: '#FFA500'}} name="pencil" size={19} />
           </TouchableHighlight>
-          <TouchableHighlight onPress={() => editPhoto(item.key, item.base64)}>
-            <Ionicons style={styles.edit} name="pencil" size={22} />
-          </TouchableHighlight>
+
+        <Text variant="bodySmall" >1{item.desc}</Text>
         </ImageBackground>
         <Text variant="bodySmall">{item.desc}</Text>
+        
+      </View> */}
+      
+
       </View>
     );
   };
@@ -191,6 +222,7 @@ const TakePhotoScreen = ({ navigation }) => {
         renderItem={renderItem}
         data={photoList}
         onDragRelease={data => {
+          reOrderSort(data);
           setPhotoList(data); // need reset the props data sort after drag release
         }}
       />
@@ -213,31 +245,54 @@ const styles = StyleSheet.create({
   item: {
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: 'grey',
   },
   close: {
     position: 'absolute',
-    top: -14,
-    left: 96,
+    right:0,
+    top: 0,
     width: 25,
     height: 25,
-    color: 'tomato',
   },
   view: {
     position: 'absolute',
-    top: 86,
-    left: 96.5,
+    top: 80,
+    left: 50,
     width: 25,
     height: 25,
-    color: '#00FF00',
   },
   edit: {
     position: 'absolute',
-    top: 86,
-    left: 45,
+    top: 105,
+    right: 0,
     width: 25,
     height: 25,
-    color: '#FFA500',
   },
+  fillCloseClose: {
+    // position:'absolute',
+    // right:1,
+    // width: 12,
+    // height: 12,
+    // backgroundColor:'#fff'
+  },
+  fillCloseView: {
+    position:'absolute',
+    top: 87,
+    left: 57,
+    width: 10,
+    height: 10,
+    backgroundColor:'black'
+  },
+  imageSort: {
+    position:'absolute',
+    top: 4,
+    left: 3,
+    backgroundColor: '#16bbff',
+    fontWeight: 'bold'
+  }
 });
 
 export default TakePhotoScreen;

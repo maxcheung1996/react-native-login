@@ -16,6 +16,7 @@ import {GlobalContext} from '../context/GlobalContext';
 import Icon, {Icons} from './Icons';
 import TakePhotoScreen from '../screens/TakePhotoScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import FollowScreen from '../screens/FollowScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -550,6 +551,7 @@ const AAHKStackNavigator = ({navigation}) => {
                           )}
                           onPress={() => {
                             setVisible(false);
+                            navigation.navigate('Follow');
                           }}
                           title={
                             lang == 'en'
@@ -559,6 +561,86 @@ const AAHKStackNavigator = ({navigation}) => {
                               : 'Follow'
                           }
                         />
+                      </>
+                    }
+                  />
+                }
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="Follow"
+          component={FollowScreen}
+          options={{
+            header: () => (
+              <CustomHeader
+                itemOne={
+                  <IconButton
+                    icon={'arrow-left-thin'}
+                    iconColor={'black'}
+                    size={20}
+                    onPress={() => navigation.goBack()}
+                  />
+                }
+                itemTwo={
+                  <IconButton
+                    icon={'home-circle-outline'}
+                    iconColor={'black'}
+                    size={20}
+                    onPress={() => navigation.navigate('AAHK')}
+                  />
+                }
+                itemThree={
+                  <CustomMenu
+                    visible={visible}
+                    openMenu={openMenu}
+                    closeMenu={closeMenu}
+                    items={
+                      <>
+                        <Menu.Item
+                          titleStyle={{fontSize: 14}}
+                          leadingIcon={() => (
+                            <Ionicons
+                              style={{marginTop: 4}}
+                              name="exit-outline"
+                              size={16}
+                            />
+                          )}
+                          onPress={() => {
+                            setVisible(false);
+                            logout();
+                          }}
+                          title={
+                            lang == 'en'
+                              ? 'SignOut'
+                              : lang == 'zh'
+                              ? '登出'
+                              : 'SignOut'
+                          }
+                        />
+                        <Divider bold={true} />
+                        <Menu.Item
+                          titleStyle={{fontSize: 14}}
+                          leadingIcon={() => (
+                            <Ionicons
+                              style={{marginTop: 4}}
+                              name="ios-settings-outline"
+                              size={16}
+                            />
+                          )}
+                          onPress={() => {
+                            setVisible(false);
+                            navigation.navigate('Setting');
+                          }}
+                          title={
+                            lang == 'en'
+                              ? 'Setting'
+                              : lang == 'zh'
+                              ? '設定'
+                              : 'Setting'
+                          }
+                        />                       
                       </>
                     }
                   />

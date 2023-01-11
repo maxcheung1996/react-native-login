@@ -11,6 +11,7 @@ export const GlobalContextProvider = ({children}) => {
   const [inspectorList, setInspectorList] = useState([]);
   const [inspector, setInspector] = useState([]);
   const [activityGuid, setActivityGuid] = useState('');
+  const [currCheckListDetail, setCurrCheckListDetail] = useState([]);
   const [floor, setGlobalFloor] = useState('');
   const [aahkDoor, setAAHKDoor] = useState('');
   const [eformResultGuid, setEformResultGuid] = useState('');
@@ -57,6 +58,8 @@ export const GlobalContextProvider = ({children}) => {
         setAAHKWorksOrder,
         inspectorList,
         setInspectorList,
+        currCheckListDetail,
+        setCurrCheckListDetail
       }}>
       {children}
     </GlobalContext.Provider>

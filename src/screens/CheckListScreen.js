@@ -21,7 +21,7 @@ const CheckListScreen = ({ navigation }) => {
   } = useForm({});
   const onSubmit = data => console.log(data);
   const [open, setFABOpen] = useState(false);
-  const { eformResultGuid, lang } = useContext(GlobalContext);
+  const { eformResultGuid, lang, setCurrCheckListDetail } = useContext(GlobalContext);
   const [checkListGlobal, setCheckListGlobal] = useState([]);
   const [checkListDetail, setCheckListDetail] = useState([]);
   const [hideList, setHideList] = useState([]);
@@ -38,17 +38,37 @@ const CheckListScreen = ({ navigation }) => {
 
   const refreshHideList = (sectionGroupId) => {
     console.log('refreshHideList start: ', sectionGroupId);
-    let tmp_hideList = [...hideList];
-    if(tmp_hideList.indexOf(sectionGroupId) > -1){
-      tmp_hideList = tmp_hideList.filter((v, i) => {return v !== sectionGroupId})
-      console.log(`tmp index ${tmp_hideList}`);
-      setHideList(tmp_hideList);
+
+    if (sectionGroupId === 'allSectionClose') {
+      let tmp_list = [];
+      let tmp_checklist = [...checkListDetail];
+      for (const section of checkListDetail) {
+        if (section.formType1 !== 'section' && section.sectionGroupId !== 'G00') {
+          if(!tmp_list.indexOf(section.sectionGroupId) > -1)
+          tmp_list.push(section.sectionGroupId)
+        }
+      }
+      setHideList(tmp_list);
+      setCheckListDetail(tmp_checklist);
+    }
+
+    if (sectionGroupId === 'allSectionOpen') {
+      let tmp_list = [];
+      setHideList(tmp_list);
       setCheckListDetail(checkListDetail);
-    }else{
-      tmp_hideList.push(sectionGroupId);
-      console.log(`tmp ${tmp_hideList}`);
-      setHideList(tmp_hideList);
-      setCheckListDetail(checkListDetail);
+    }
+
+    if (!(sectionGroupId.indexOf('allSection') > -1)) {
+      let tmp_hideList = [...hideList];
+      if (tmp_hideList.indexOf(sectionGroupId) > -1) {
+        tmp_hideList = tmp_hideList.filter((v, i) => { return v !== sectionGroupId })
+        setHideList(tmp_hideList);
+        setCheckListDetail(checkListDetail);
+      } else {
+        tmp_hideList.push(sectionGroupId);
+        setHideList(tmp_hideList);
+        setCheckListDetail(checkListDetail);
+      }
     }
   }
 
@@ -88,6 +108,7 @@ const CheckListScreen = ({ navigation }) => {
       );
 
       setCheckListDetail(checkListDetail);
+      setCurrCheckListDetail(checkListDetail);
     } catch (error) {
       console.log('getDoorFrDB error: ', error);
       setCheckListGlobal(checkListGlobal);
@@ -151,7 +172,7 @@ const CheckListScreen = ({ navigation }) => {
           } else if (v.formType1 === 'SELECT') {
             return (
               <>
-                <View style={[{ flexDirection: 'row', alignItems: 'center' }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1 ? {display: 'none'} : {}]}>
+                <View style={[{ flexDirection: 'row', alignItems: 'center' }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
                   <Text style={{ fontSize: 13 }}>
                     {v.header1} {v.ansOption1}
                   </Text>
@@ -164,7 +185,7 @@ const CheckListScreen = ({ navigation }) => {
               <View>
                 <TextInput
                   value={v.ans1}
-                  style={[{ fontSize: 13 }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}]}
+                  style={[{ fontSize: 13 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}
                   mode={'outlined'}
                   label={v.header1}
                   right={<TextInput.Icon onPress={() => { eraseInput(v.eformResultDetailGuid) }} size={13} icon="eraser" />}
@@ -191,7 +212,7 @@ const CheckListScreen = ({ navigation }) => {
             };
 
             return (
-              <View style={[{ paddingBottom: 7 }, hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}]}>
+              <View style={[{ paddingBottom: 7 }, hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}]}>
                 <Text style={style.dropdownText}>{v.header1}</Text>
                 <RNPickerSelect
                   placeholder={placeholder}
@@ -217,7 +238,7 @@ const CheckListScreen = ({ navigation }) => {
           } else if (v.formType1 === 'CALENDAR') {
             return (
 
-              <View style={hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}}>
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
                 <View>
                   <TextInput
                     value={v.ans1 ? new Date(v.ans1).toString() : new Date().toString()}
@@ -250,7 +271,7 @@ const CheckListScreen = ({ navigation }) => {
             );
           } else {
             return (
-              <View style={hideList.indexOf(v.sectionGroupId) > -1 || hideList.indexOf("allSectionClose") > -1  ? {display: 'none'} : {}}>
+              <View style={hideList.indexOf(v.sectionGroupId) > -1 ? {display: 'none'} : {}}>
                 <Text>
                   {v.header1} {v.formType1}
                 </Text></View>
@@ -283,10 +304,10 @@ const CheckListScreen = ({ navigation }) => {
             onPress: () => handleSubmit(onSubmit),
           },
           {
-            icon: hideList.indexOf('allSectionClose') > -1 ? 'chevron-left' : 'chevron-down',
-            label: hideList.indexOf('allSectionClose') > -1 ? lang == 'en' ? 'Expand' : '展開' : lang == 'en' ? 'Collapse' : '關閉',
+            icon: hideList.length > 0 ? 'chevron-left' : 'chevron-down',
+            label: hideList.length > 0 ? lang == 'en' ? 'Expand' : '展開' : lang == 'en' ? 'Collapse' : '關閉',
             style: { backgroundColor: '#eb8f34' },
-            onPress: () => refreshHideList("allSectionClose"),
+            onPress: () => hideList.length > 0 ? refreshHideList("allSectionOpen") : refreshHideList("allSectionClose"),
           },
         ]}
         onStateChange={() => {
