@@ -333,3 +333,34 @@ export const checkFirstTimeLogin = async setFirstTimeLogin => {
   user = await getLastLoginUserInfo();
   setFirstTimeLogin(user.length > 0 ? true : false);
 };
+
+export const handleSubChange = (
+  eformResultSubDetailGuid,
+  value,
+  subFormType1,
+  checkListAllSubDetail,
+  setCheckListAllSubDetail,
+) => {
+  console.log(
+    `handleSubChange start ${eformResultSubDetailGuid} ${value} ${subFormType1}`,
+  );
+  let newCheckListAllSubDetail = [...checkListAllSubDetail];
+  for (const [index, detail] of newCheckListAllSubDetail.entries()) {
+    if (detail.eformResultSubDetailGuid === eformResultSubDetailGuid) {
+      if (subFormType1 === 'SELECT' || subFormType1 === 'TOGGLE') {
+        subFormType1 === 'SELECT'
+          ? (newCheckListAllSubDetail[index].subAns1 =
+              newCheckListAllSubDetail[index].subAns1 === '1' ? '' : '1')
+          : subFormType1 === 'TOGGLE'
+          ? (newCheckListAllSubDetail[index].subAns2 =
+              newCheckListAllSubDetail[index].subAns2 === '1' ? '' : '1')
+          : '';
+      } else if (subFormType1 === 'CHECKBOX') {
+        newCheckListAllSubDetail[index].subAns1 = value;
+      } else {
+        newCheckListAllSubDetail[index].subAns1 = value;
+      }
+    }
+  }
+  setCheckListAllSubDetail(newCheckListAllSubDetail);
+};

@@ -8,5 +8,6 @@
         "lightgreen",
         "SOCAM",
         "TEXTBOX"
-    ]
+    ],
+    "editor.formatOnSave": true
 }

@@ -60,22 +60,26 @@ const BuildingScreen = ({navigation}) => {
     }
     let results = await realmRead(InspectorList, 'InspectorList');
     let return_result = [];
-    for (const result of results) {
-      return_result.push({
-        label: result.fullName,
-        value: result.userGuid,
-        icon: () => (
-          <Avatar.Icon
-            backgroundColor="lightgrey"
-            color="black"
-            style={{marginLeft: 8}}
-            size={23}
-            icon="human-greeting-variant"
-          />
-        ),
-      });
-    }
+    let tmp_results = [];
 
+    for (const result of results) {
+      if (!(tmp_results.indexOf(result.fullName) > -1)) {
+        tmp_results.push(result.fullName);
+        return_result.push({
+          label: result.fullName,
+          value: result.fullName,
+          icon: () => (
+            <Avatar.Icon
+              backgroundColor="lightgrey"
+              color="black"
+              style={{marginLeft: 8}}
+              size={23}
+              icon="human-greeting-variant"
+            />
+          ),
+        });
+      }
+    }
     setInspectorList(return_result);
   };
 
