@@ -25,6 +25,7 @@ import FABGroup from '../components/FABGroup';
 import SubModal from '../components/SubModal';
 import {EformResultSubDetails} from '../database/schema/EformResultSubDetails';
 import {handleSubChange} from '../helper';
+import {useIsFocused} from '@react-navigation/native';
 
 const CheckListScreen = ({navigation}) => {
   const {aahkDoor, inspector, floor, aahkTray} = useContext(GlobalContext);
@@ -45,6 +46,7 @@ const CheckListScreen = ({navigation}) => {
   const [isFollow, setIsFollow] = useState([]);
   const {userInfo} = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
+  const [doorSecFollow, setDoorSecFollow] = useState([]);
   const routeToScreen = screen => {
     navigation.push(screen);
   };
@@ -52,6 +54,34 @@ const CheckListScreen = ({navigation}) => {
   useEffect(() => {
     getCheckListFrDBByEFormGuid(eformResultGuid);
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      // The screen is focused
+      // Call any action
+      if (aahkTray === 'DOOR_INSPECTION') {
+        console.log('focus');
+        let tmp_doorfollow = [];
+        let resp = await realmRead(
+          EformResultSubDetails,
+          'EformResultSubDetails',
+          `eformResultGuid == '${eformResultGuid}'`,
+        );
+        if (typeof resp !== 'undefined') {
+          for (const item of resp) {
+            if (item.subAns1 || item.subAns2) {
+              tmp_doorfollow.push(item.eformResultDetailGuid);
+            }
+          }
+          setDoorSecFollow(tmp_doorfollow);
+          console.log(tmp_doorfollow);
+        }
+      }
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState('');
@@ -195,7 +225,7 @@ const CheckListScreen = ({navigation}) => {
   };
 
   const checkIsFollow = checkListAllSubDetail => {
-    let tmp_isFollow = [...isFollow];
+    let tmp_isFollow = [];
     checkListAllSubDetail.map((v, i) => {
       if (v.subAns1 || v.subAns2) {
         if (!(tmp_isFollow.indexOf(v.eformResultDetailGuid) > -1)) {
@@ -208,6 +238,7 @@ const CheckListScreen = ({navigation}) => {
   };
 
   const showModal = eformResultDetailGuid => {
+    console.log('show modal');
     let tmp_eformResultDetailGuid = [];
     tmp_eformResultDetailGuid = checkListAllSubDetail.filter((v, i) => {
       return v.eformResultDetailGuid === eformResultDetailGuid;
@@ -216,7 +247,24 @@ const CheckListScreen = ({navigation}) => {
     setVisible(true);
   };
 
-  const removeSubItem = () => {};
+  const removeSubItem = eformResultDetailGuid => {
+    console.log(`eformResultDetailGuid : ${eformResultDetailGuid}`);
+    let tmp_checklist = [...checkListDetail];
+    for (const [index, item] of tmp_checklist.entries()) {
+      if (item.eformResultDetailGuid === eformResultDetailGuid) {
+        tmp_checklist[index].ans1 = '';
+      }
+    }
+
+    let tmp_subChecklist = [...checkListSubDetail];
+    for (const [index, item] of tmp_subChecklist.entries()) {
+      if (item.eformResultDetailGuid === eformResultDetailGuid) {
+        tmp_subChecklist[index].subAns1 = '';
+      }
+    }
+    setCheckListSubDetail(tmp_subChecklist);
+    setCheckListDetail(tmp_checklist);
+  };
 
   return (
     <>
@@ -240,7 +288,14 @@ const CheckListScreen = ({navigation}) => {
             checkListDetail.map((v, i) => {
               if (v.formType1 === 'SECTION') {
                 return (
-                  <View style={style.subheader}>
+                  <View
+                    style={[
+                      style.subheader,
+                      aahkTray === 'DOOR_INSPECTION' &&
+                      doorSecFollow.indexOf(v.eformResultDetailGuid) > -1
+                        ? {backgroundColor: '#00FF00'}
+                        : {backgroundColor: '#16bbff'},
+                    ]}>
                     <View
                       style={{
                         paddingLeft: 5,
@@ -542,7 +597,6 @@ const style = StyleSheet.create({
   subheader: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#16bbff',
     borderRadius: 6,
     elevation: 2,
     height: 40,

@@ -65,7 +65,10 @@ const SubModal = ({
                   icon={'trash-can'}
                   iconColor={'red'}
                   size={20}
-                  onPress={hideModal}
+                  onPress={() => {
+                    removeSubItem(checkListSubDetail[0].eformResultDetailGuid);
+                    hideModal();
+                  }}
                 />
               </View>
             ) : (

@@ -4,7 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {Avatar, IconButton, Card, Text} from 'react-native-paper';
 import {GlobalContext} from '../context/GlobalContext';
 import {EformResultSubDetails} from '../database/schema/EformResultSubDetails';
-import {realmRead} from '../database/service/crud';
+import {realmRead, realmDelete, realmCreate} from '../database/service/crud';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {convertDateString, handleSubChange} from '../helper';
 import {AuthContext} from '../context/AuthContext';
@@ -29,7 +29,19 @@ const FollowScreen = ({navigation}) => {
     setCheckListSubDetail(tmp_eformResultDetailGuid);
     setVisible(true);
   };
-  const hideModal = () => setVisible(false);
+  const hideModal = async () => {
+    await realmDelete(
+      EformResultSubDetails,
+      'EformResultSubDetails',
+      `eformResultGuid == '${checkListAllSubDetail[0].eformResultGuid}'`,
+    );
+    await realmCreate(
+      EformResultSubDetails,
+      'EformResultSubDetails',
+      checkListAllSubDetail,
+    );
+    setVisible(false);
+  };
 
   useEffect(() => {
     getSectionList();
@@ -41,9 +53,7 @@ const FollowScreen = ({navigation}) => {
       'EformResultSubDetails',
       `eformResultGuid == '${eformResultGuid}'`,
     );
-
     setCheckListAllSubDetail(checkListAllSubDetail);
-
     let tmp = [];
     for (const detail of currCheckListDetail) {
       if (detail.formType1 === 'SECTION')
@@ -68,6 +78,28 @@ const FollowScreen = ({navigation}) => {
           ),
         });
     }
+
+    let tmp_followList = [];
+    for (const allSubDetail of checkListAllSubDetail) {
+      if (allSubDetail.subAns1 || allSubDetail.subAns2) {
+        if (tmp_followList.length === 0) {
+          tmp_followList = [];
+        }
+        if (
+          !(
+            JSON.stringify(followList).indexOf(
+              allSubDetail.eformResultDetailGuid,
+            ) > -1
+          )
+        ) {
+          // console.log(JSON.stringify(followList));
+          // console.log(allSubDetail.eformResultDetailGuid);
+          tmp_followList.push([allSubDetail]);
+        }
+      }
+    }
+    console.log('tmp_followList11: ', tmp_followList.length);
+    setFollowList(tmp_followList);
     setSectionList(tmp);
   };
 
@@ -81,6 +113,7 @@ const FollowScreen = ({navigation}) => {
           return v.eformResultDetailGuid === section;
         });
         tmp_followList.push(tmp_section);
+        console.log(tmp_followList);
         setFollowList(tmp_followList);
       }
     }
@@ -178,8 +211,8 @@ const renderItem = (item, userInfo, removeItem, showModal) => {
       style={style.card}
       onPress={() => showModal(item[0].eformResultDetailGuid)}>
       <Card.Title
-        title={item[0].sectionTitle}
-        subtitle={item[0].sectionSubtitle}
+        title={item.length > 0 ? item[0].sectionTitle : ''}
+        subtitle={item.length > 0 ? item[0].sectionSubtitle : ''}
         left={LeftContent}
         right={() => (
           <Card.Actions>
@@ -214,7 +247,10 @@ const renderItem = (item, userInfo, removeItem, showModal) => {
                 fontWeight: 'bold',
                 fontSize: 12,
               }}>
-              最後更新: {convertDateString(item[0].updatedTimestamp)}
+              最後更新:{' '}
+              {item.length > 0
+                ? convertDateString(item[0].updatedTimestamp)
+                : ''}
             </Text>
           </View>
         </View>
