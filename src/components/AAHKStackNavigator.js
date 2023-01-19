@@ -528,7 +528,7 @@ const AAHKStackNavigator = ({navigation}) => {
                             : 'Setting'
                         }
                       />
-                      {aahkTray === 'DOOR_INSPECTION' ? (
+                      {/* {aahkTray === 'DOOR_INSPECTION' ? (
                         <>
                           <Divider bold={true} />
                           <Menu.Item
@@ -561,7 +561,7 @@ const AAHKStackNavigator = ({navigation}) => {
                         </>
                       ) : (
                         ''
-                      )}
+                      )} */}
                     </>
                   }
                 />

@@ -1,7 +1,11 @@
-export const BASE_URL = 'https://dev.socam.com/aahkapi/api/'
+const IS_DEV = true;
 
-export const VERSION = '0.0.18'
+export const BASE_URL = IS_DEV
+  ? 'https://dev.socam.com/aahkapi/api/'
+  : 'https://app.socam.com/aahkapi/api/';
+
+export const VERSION = '0.0.18';
 
 export const KEY = new Int8Array(64);
 
-export const FINGERPRINT_BYPASS = "fingerprint_NcS#VwV%5U$mEhRp"
+export const FINGERPRINT_BYPASS = 'fingerprint_NcS#VwV%5U$mEhRp';

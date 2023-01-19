@@ -87,13 +87,11 @@ const FollowScreen = ({navigation}) => {
         }
         if (
           !(
-            JSON.stringify(followList).indexOf(
+            JSON.stringify(tmp_followList).indexOf(
               allSubDetail.eformResultDetailGuid,
             ) > -1
           )
         ) {
-          // console.log(JSON.stringify(followList));
-          // console.log(allSubDetail.eformResultDetailGuid);
           tmp_followList.push([allSubDetail]);
         }
       }

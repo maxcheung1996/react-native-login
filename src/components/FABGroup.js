@@ -10,8 +10,10 @@ const FABGroup = ({
   hideList,
   refreshHideList,
   setFABOpen,
+  onSubmit,
+  action,
 }) => {
-  const {lang} = useContext(GlobalContext);
+  const {lang, aahkTray} = useContext(GlobalContext);
 
   return (
     <FAB.Group
@@ -19,42 +21,87 @@ const FABGroup = ({
       open={open}
       visible
       icon={open ? 'close-circle-outline' : 'plus'}
-      actions={[
-        {
-          icon: 'camera-plus-outline',
-          label: lang == 'en' ? 'Take Photo' : '拍照',
-          style: {backgroundColor: '#5bc0de'},
-          onPress: () => routeToScreen('TakePhoto'),
-        },
-        {
-          icon: 'content-save-edit-outline',
-          label: lang == 'en' ? 'Save' : '儲存',
-          style: {backgroundColor: '#00FF00'},
-          onPress: () => handleSubmit(onSubmit),
-        },
-        {
-          icon: 'clipboard-check-multiple-outline',
-          label: lang == 'en' ? 'Complete' : '完成',
-          style: {backgroundColor: '#FFD801'},
-          onPress: () => handleSubmit(onSubmit),
-        },
-        {
-          icon: hideList.length > 0 ? 'chevron-left' : 'chevron-down',
-          label:
-            hideList.length > 0
-              ? lang == 'en'
-                ? 'Expand'
-                : '展開'
-              : lang == 'en'
-              ? 'Collapse'
-              : '關閉',
-          style: {backgroundColor: '#eb8f34'},
-          onPress: () =>
-            hideList.length > 0
-              ? refreshHideList('allSectionOpen')
-              : refreshHideList('allSectionClose'),
-        },
-      ]}
+      actions={
+        aahkTray === 'DOOR_INSPECTION'
+          ? [
+              {
+                icon: 'exclamation',
+                label: lang == 'en' ? 'Follow' : '跟進',
+                style: {backgroundColor: '#5bc0de'},
+                onPress: () => routeToScreen('Follow'),
+              },
+              {
+                icon: 'camera-plus-outline',
+                label: lang == 'en' ? 'Take Photo' : '拍照',
+                style: {backgroundColor: '#e4edd3'},
+                onPress: () => routeToScreen('TakePhoto'),
+              },
+              {
+                icon: 'content-save-edit-outline',
+                label: lang == 'en' ? 'Save' : '儲存',
+                style: {backgroundColor: '#00FF00'},
+                onPress: () => action('save'),
+              },
+              {
+                icon: 'clipboard-check-multiple-outline',
+                label: lang == 'en' ? 'Complete' : '完成',
+                style: {backgroundColor: '#FFD801'},
+                onPress: () => action('done'),
+              },
+              {
+                icon: hideList.length > 0 ? 'chevron-left' : 'chevron-down',
+                label:
+                  hideList.length > 0
+                    ? lang == 'en'
+                      ? 'Expand'
+                      : '展開'
+                    : lang == 'en'
+                    ? 'Collapse'
+                    : '關閉',
+                style: {backgroundColor: '#f5b169'},
+                onPress: () =>
+                  hideList.length > 0
+                    ? refreshHideList('allSectionOpen')
+                    : refreshHideList('allSectionClose'),
+              },
+            ]
+          : [
+              {
+                icon: 'camera-plus-outline',
+                label: lang == 'en' ? 'Take Photo' : '拍照',
+                style: {backgroundColor: '#5bc0de'},
+                onPress: () => routeToScreen('TakePhoto'),
+              },
+              {
+                icon: 'content-save-edit-outline',
+                label: lang == 'en' ? 'Save' : '儲存',
+                style: {backgroundColor: '#00FF00'},
+                onPress: () => action('save'),
+              },
+              {
+                icon: 'clipboard-check-multiple-outline',
+                label: lang == 'en' ? 'Complete' : '完成',
+                style: {backgroundColor: '#FFD801'},
+                onPress: () => action('done'),
+              },
+              {
+                icon: hideList.length > 0 ? 'chevron-left' : 'chevron-down',
+                label:
+                  hideList.length > 0
+                    ? lang == 'en'
+                      ? 'Expand'
+                      : '展開'
+                    : lang == 'en'
+                    ? 'Collapse'
+                    : '關閉',
+                style: {backgroundColor: '#eb8f34'},
+                onPress: () =>
+                  hideList.length > 0
+                    ? refreshHideList('allSectionOpen')
+                    : refreshHideList('allSectionClose'),
+              },
+            ]
+      }
       onStateChange={() => {
         setFABOpen(!open);
       }}

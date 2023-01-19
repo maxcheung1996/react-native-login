@@ -3,6 +3,7 @@ import {GlobalContext} from '../context/GlobalContext';
 import {View, StyleSheet, Platform} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
+  ActivityIndicator,
   Button,
   Checkbox,
   FAB,
@@ -14,7 +15,7 @@ import {
 import {useForm, Controller} from 'react-hook-form';
 import {EformResultGlobal} from '../database/schema/EformResultGlobal';
 import {EformResultDetail} from '../database/schema/EformResultDetail';
-import {realmRead} from '../database/service/crud';
+import {realmCreate, realmDelete, realmRead} from '../database/service/crud';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
@@ -47,44 +48,20 @@ const CheckListScreen = ({navigation}) => {
   const {userInfo} = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
   const [doorSecFollow, setDoorSecFollow] = useState([]);
+  const isFocused = useIsFocused();
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isFocused) {
+      getCheckListFrDBByEFormGuid(eformResultGuid);
+    }
+  }, [isFocused]);
+
   const routeToScreen = screen => {
     navigation.push(screen);
   };
-
-  useEffect(() => {
-    getCheckListFrDBByEFormGuid(eformResultGuid);
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-      // The screen is focused
-      // Call any action
-      if (aahkTray === 'DOOR_INSPECTION') {
-        console.log('focus');
-        let tmp_doorfollow = [];
-        let resp = await realmRead(
-          EformResultSubDetails,
-          'EformResultSubDetails',
-          `eformResultGuid == '${eformResultGuid}'`,
-        );
-        if (typeof resp !== 'undefined') {
-          for (const item of resp) {
-            if (item.subAns1 || item.subAns2) {
-              tmp_doorfollow.push(item.eformResultDetailGuid);
-            }
-          }
-          setDoorSecFollow(tmp_doorfollow);
-          console.log(tmp_doorfollow);
-        }
-      }
-    });
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
-
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState('');
 
   const refreshHideList = sectionGroupId => {
     console.log('refreshHideList start: ', sectionGroupId);
@@ -154,9 +131,20 @@ const CheckListScreen = ({navigation}) => {
         `eformResultGuid == '${eformResultGuid}'`,
       );
 
+      let tmp_doorfollow = [];
+      let resp = checkListAllSubDetail;
+
+      if (typeof resp !== 'undefined') {
+        for (const item of resp) {
+          if (item.subAns1 || item.subAns2) {
+            tmp_doorfollow.push(item.eformResultDetailGuid);
+          }
+        }
+        setDoorSecFollow(tmp_doorfollow);
+      }
       setCheckListAllSubDetail(checkListAllSubDetail);
 
-      checkIsFollow(checkListAllSubDetail);
+      let is_follow = checkIsFollow(checkListAllSubDetail);
 
       checkListGlobal = await realmRead(
         EformResultGlobal,
@@ -172,6 +160,13 @@ const CheckListScreen = ({navigation}) => {
         `eformResultGuid == '${eformResultGuid}'`,
       );
 
+      checkTestResult(
+        checkListGlobal,
+        tmp_doorfollow,
+        checkListDetail,
+        setCheckListGlobal,
+        is_follow,
+      );
       setCheckListDetail(checkListDetail);
       setCurrCheckListDetail(checkListDetail);
     } catch (error) {
@@ -181,10 +176,67 @@ const CheckListScreen = ({navigation}) => {
     }
   };
 
-  const handlechange = (eformResultDetailGuid, value, formType1) => {
+  const checkTest = () => {
+    checkTestResult(
+      checkListGlobal,
+      doorSecFollow,
+      checkListDetail,
+      setCheckListGlobal,
+      isFollow,
+    );
+  };
+
+  const checkTestResult = (
+    checkListGlobal,
+    doorSecFollow,
+    checkListDetail,
+    setCheckListGlobal,
+    isFollow,
+  ) => {
+    let tmp_checklistGlobal = [...checkListGlobal];
+
+    if (aahkTray === 'DOOR_INSPECTION') {
+      let tmp_result = checkListDetail.filter((v, i) => {
+        return v.header1 === '不能進入';
+      });
+      let getIn = '';
+      if (tmp_result.length > 0) {
+        getIn = tmp_result[0].ans1;
+      }
+
+      tmp_checklistGlobal[0].testResult =
+        getIn === '1'
+          ? '不能進入'
+          : doorSecFollow.length > 0
+          ? '待跟進'
+          : '正常';
+    } else {
+      let tmp_result = checkListDetail.filter((v, i) => {
+        return v.header1 === '檢查正常';
+      });
+      let getIn = '';
+      //alert(JSON.stringify(tmp_result));
+      if (tmp_result.length > 0) {
+        getIn = tmp_result[0].ans1;
+      }
+      //alert(getIn);
+      tmp_checklistGlobal[0].testResult =
+        getIn === '1' ? '正常' : isFollow.length > 0 ? '待跟進' : '';
+    }
+    setCheckListGlobal(tmp_checklistGlobal);
+  };
+
+  const handlechange = (
+    eformResultDetailGuid,
+    value,
+    formType1,
+    header1,
+    checkTest,
+  ) => {
     console.log(
       `handlechange start ${eformResultDetailGuid} ${value} ${formType1}`,
     );
+
     let newCheckListDetail = [...checkListDetail];
     for (const [index, detail] of newCheckListDetail.entries()) {
       if (detail.eformResultDetailGuid === eformResultDetailGuid) {
@@ -195,6 +247,15 @@ const CheckListScreen = ({navigation}) => {
           newCheckListDetail[index].ans1 = value;
         }
       }
+    }
+    if (header1 === '檢查正常' || header1 === '不能進入') {
+      checkTestResult(
+        checkListGlobal,
+        doorSecFollow,
+        newCheckListDetail,
+        setCheckListGlobal,
+        isFollow,
+      );
     }
     setCheckListDetail(newCheckListDetail);
   };
@@ -218,8 +279,25 @@ const CheckListScreen = ({navigation}) => {
     setCheckListDetail(newCheckListDetail);
   };
 
-  const hideModal = () => {
-    checkIsFollow(checkListAllSubDetail);
+  const hideModal = async () => {
+    await realmDelete(
+      EformResultSubDetails,
+      'EformResultSubDetails',
+      `eformResultGuid == '${checkListAllSubDetail[0].eformResultGuid}'`,
+    );
+    await realmCreate(
+      EformResultSubDetails,
+      'EformResultSubDetails',
+      checkListAllSubDetail,
+    );
+    let tmp_isFollow = checkIsFollow(checkListAllSubDetail);
+    checkTestResult(
+      checkListGlobal,
+      doorSecFollow,
+      checkListDetail,
+      setCheckListGlobal,
+      tmp_isFollow,
+    );
     setVisible(false);
     setCheckListDetail(checkListDetail);
   };
@@ -235,6 +313,7 @@ const CheckListScreen = ({navigation}) => {
     });
     setIsFollow(tmp_isFollow);
     console.log(tmp_isFollow);
+    return tmp_isFollow;
   };
 
   const showModal = eformResultDetailGuid => {
@@ -266,8 +345,28 @@ const CheckListScreen = ({navigation}) => {
     setCheckListDetail(tmp_checklist);
   };
 
+  const action = async type => {
+    console.log(type);
+    if (type === 'save') {
+      await realmDelete(
+        EformResultDetail,
+        'EformResultDetail',
+        `eformResultGuid == '${eformResultGuid}'`,
+      );
+      await realmCreate(
+        EformResultDetail,
+        'EformResultDetail',
+        checkListDetail,
+      );
+    } else if (action === 'done') {
+    }
+  };
+
   return (
     <>
+      {/* <View style={style.loading}>
+        <ActivityIndicator animating={isLoading} size="large" />
+      </View> */}
       <SubModal
         hideModal={hideModal}
         visible={visible}
@@ -350,6 +449,8 @@ const CheckListScreen = ({navigation}) => {
                             v.eformResultDetailGuid,
                             v.ans1,
                             v.formType1,
+                            v.header1,
+                            checkTest,
                           )
                         }
                       />
@@ -402,7 +503,7 @@ const CheckListScreen = ({navigation}) => {
 
                 let placeholder = {
                   label: 'Select an item...',
-                  value: null,
+                  value: '',
                   color: '#9EA0A4',
                 };
 
@@ -546,6 +647,8 @@ const CheckListScreen = ({navigation}) => {
           hideList={hideList}
           refreshHideList={refreshHideList}
           setFABOpen={setFABOpen}
+          onSubmit={onSubmit}
+          action={action}
         />
       </View>
     </>
@@ -601,6 +704,16 @@ const style = StyleSheet.create({
     elevation: 2,
     height: 40,
     marginTop: 8,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99,
   },
 });
 

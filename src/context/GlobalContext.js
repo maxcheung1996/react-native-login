@@ -19,6 +19,9 @@ export const GlobalContextProvider = ({children}) => {
   const [contractNo, setContractNo] = useState('T20M102');
   const [lang, setLang] = useState('en');
   const [darkMode, setDarkMode] = useState(false);
+  const [sel_checkListGlobal, setSel_checkListGlobal] = useState([]);
+  const [sel_checkListDetail, setSel_checkListDetail] = useState([]);
+  const [sel_checkListSubDetail, setSel_checkListSubDetail] = useState([]);
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -31,7 +34,7 @@ export const GlobalContextProvider = ({children}) => {
   return (
     <GlobalContext.Provider
       value={{
-        darkMode, 
+        darkMode,
         setDarkMode,
         lang,
         setLang,
@@ -59,7 +62,13 @@ export const GlobalContextProvider = ({children}) => {
         inspectorList,
         setInspectorList,
         currCheckListDetail,
-        setCurrCheckListDetail
+        setCurrCheckListDetail,
+        sel_checkListGlobal,
+        sel_checkListDetail,
+        sel_checkListSubDetail,
+        setSel_checkListGlobal,
+        setSel_checkListDetail,
+        setSel_checkListSubDetail,
       }}>
       {children}
     </GlobalContext.Provider>
